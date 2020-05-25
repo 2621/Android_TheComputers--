@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">TheComputersMM</string>
+    <string name="conversation"><font size="16sp">Sarah</font>\n\<font size="14sp">Oi</font></string>
+    <string name="conversation2"><font size="16sp">Ale</font>\n\<font size="14sp">Até mais!</font></string>
+</resources>
