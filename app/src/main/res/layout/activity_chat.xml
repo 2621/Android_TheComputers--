@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/ic_launcher_coloredback">
+    android:background="@mipmap/ic_launcher_coloredback_background"
+    tools:context=".Chat">
 
-tools:context=".Chat">
+    <!--usar list view, pode tirar o scrow view -->
 
     <LinearLayout
         android:layout_width="match_parent"
