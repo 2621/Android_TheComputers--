@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void openInitialPage (View view){
         Intent intent = new Intent(this, InitialPage.class);
+
         startActivity(intent);
     }
 

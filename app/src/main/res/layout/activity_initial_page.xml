@@ -57,6 +57,20 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+<!--                <Button-->
+<!--                    android:id="@+id/buttonConver1"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="70dp"-->
+<!--                    android:layout_marginStart="8dp"-->
+<!--                    android:layout_marginTop="8dp"-->
+<!--                    android:layout_marginEnd="8dp"-->
+<!--                    android:background="#E6E5E5"-->
+<!--                    android:fontFamily="sans-serif-condensed-medium"-->
+<!--                    android:onClick="openChat"-->
+<!--                    android:text="@string/conversation"-->
+<!--                    android:textAllCaps="false"-->
+<!--                    android:textSize="16sp" />-->
+
                 <Button
                     android:id="@+id/buttonConver1"
                     android:layout_width="match_parent"
@@ -67,9 +81,23 @@
                     android:background="#E6E5E5"
                     android:fontFamily="sans-serif-condensed-medium"
                     android:onClick="openChat"
-                    android:text="@string/conversation"
+                    android:text="Sarah \n Oi"
                     android:textAllCaps="false"
                     android:textSize="16sp" />
+
+<!--                <Button-->
+<!--                    android:id="@+id/buttonConver2"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="70dp"-->
+<!--                    android:layout_marginStart="8dp"-->
+<!--                    android:layout_marginTop="8dp"-->
+<!--                    android:layout_marginEnd="8dp"-->
+<!--                    android:background="#FFE6E5E5"-->
+<!--                    android:fontFamily="sans-serif-condensed-medium"-->
+<!--                    android:onClick="openChat"-->
+<!--                    android:text="@string/conversation2"-->
+<!--                    android:textAllCaps="false"-->
+<!--                    android:textSize="16sp" />-->
 
                 <Button
                     android:id="@+id/buttonConver2"
@@ -81,7 +109,7 @@
                     android:background="#FFE6E5E5"
                     android:fontFamily="sans-serif-condensed-medium"
                     android:onClick="openChat"
-                    android:text="@string/conversation2"
+                    android:text="Ale \n Ate mais"
                     android:textAllCaps="false"
                     android:textSize="16sp" />
             </LinearLayout>
