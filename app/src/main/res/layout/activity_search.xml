@@ -39,78 +39,34 @@
             </SearchView>
 
             <ImageButton
-                android:id="@+id/imageButton"
-                android:layout_width="wrap_content"
+                android:id="@+id/imageButtonOptions2"
+                android:layout_width="0dp"
                 android:layout_height="53dp"
                 android:layout_weight="1"
+                android:contentDescription="@string/dots"
                 android:translationY="1sp"
                 app:srcCompat="@drawable/ic_action_dots" />
+
         </LinearLayout>
 
-        <ScrollView
+        <ListView
+            android:id="@+id/listViewUser"
             android:layout_width="match_parent"
-            android:layout_height="598dp">
+            android:layout_height="594dp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <CheckBox
-                    android:id="@+id/checkBoxUser1"
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="#FFE6E5E5"
-                    android:fontFamily="sans-serif-condensed-medium"
-                    android:text="Ale"
-                    android:textAlignment="center"
-                    android:textSize="18sp" />
-
-                <CheckBox
-                    android:id="@+id/checkBoxUser2"
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="#FFE6E5E5"
-                    android:fontFamily="sans-serif-condensed-medium"
-                    android:text="Milena"
-                    android:textAlignment="center"
-                    android:textSize="18sp" />
-
-                <CheckBox
-                    android:id="@+id/checkBoxUser3"
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="#FFE6E5E5"
-                    android:fontFamily="sans-serif-condensed-medium"
-                    android:text="Sarah"
-                    android:textAlignment="center"
-                    android:textSize="18sp" />
-
-            </LinearLayout>
-        </ScrollView>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ImageButton
-                android:id="@+id/imageButtonStartNewConv"
-                android:layout_width="71dp"
-                android:layout_height="64dp"
-                android:onClick="openChat"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:srcCompat="@drawable/ic_action_arrowright" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageButton
+            android:id="@+id/imageButtonStartNewConv"
+            android:layout_width="71dp"
+            android:layout_height="64dp"
+            android:layout_marginStart="341dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="5dp"
+            android:contentDescription="@string/newchat"
+            android:onClick="openChat"
+            app:layout_constraintTop_toBottomOf="@+id/listViewUser"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_action_arrowright" />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
