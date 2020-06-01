@@ -54,62 +54,64 @@ public class MainActivity extends AppCompatActivity {
     public void openInitialPage (View view) throws JSONException {
         String usernameString = username.getText().toString();
         String passwordString = password.getText().toString();
+        Intent intent = new Intent(this, InitialPage.class);
+        startActivity(intent);
 
-        JSONObject jsonBody = new JSONObject();
-        jsonBody.put("username", usernameString);
-        jsonBody.put("password", passwordString);
-        String requestBody = jsonBody.toString();
-
-        String url = "http://192.168.91.56:8080/login";
-
-        login(url, requestBody);
-
-    }
-
-    private void login(String url, final String requestBody){
-
-        final Intent intent = new Intent(this, InitialPage.class);
-
-        stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.i("Resposta de login", response);
-                if (response.equals("LOGGED")){
-                  Log.i("Login response", response);
-                  startActivity(intent);
-                } else {
-                    Toast toast = Toast.makeText(getApplicationContext(), "Usuário não cadastrado", Toast.LENGTH_LONG);
-                    Log.i("JSON", requestBody);
-                    toast.show();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("ERROR", error.toString());
-
-            }
-        }) {
-            @Override
-            public String getBodyContentType() {
-                return "application/json; charset=utf-8";
-            }
-
-            @Override
-            public byte[] getBody() throws AuthFailureError {
-                try {
-                    return requestBody == null ? null : requestBody.getBytes("utf-8");
-                } catch (UnsupportedEncodingException uee) {
-                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", requestBody, "utf-8");
-                    return null;
-                }
-            }
-
-        };
-
-        requestQueue.add(stringRequest);
+//        JSONObject jsonBody = new JSONObject();
+//        jsonBody.put("username", usernameString);
+//        jsonBody.put("password", passwordString);
+//        String requestBody = jsonBody.toString();
+//
+//        String url = "http://192.168.91.56:8080/login";
+//
+//        login(url, requestBody);
 
     }
+
+//    private void login(String url, final String requestBody){
+//
+//        final Intent intent = new Intent(this, InitialPage.class);
+//
+//        stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//                Log.i("Resposta de login", response);
+//                if (response.equals("LOGGED")){
+//                  Log.i("Login response", response);
+//                  startActivity(intent);
+//                } else {
+//                    Toast toast = Toast.makeText(getApplicationContext(), "Usuário não cadastrado", Toast.LENGTH_LONG);
+//                    Log.i("JSON", requestBody);
+//                    toast.show();
+//                }
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Log.e("ERROR", error.toString());
+//
+//            }
+//        }) {
+//            @Override
+//            public String getBodyContentType() {
+//                return "application/json; charset=utf-8";
+//            }
+//
+//            @Override
+//            public byte[] getBody() throws AuthFailureError {
+//                try {
+//                    return requestBody == null ? null : requestBody.getBytes("utf-8");
+//                } catch (UnsupportedEncodingException uee) {
+//                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", requestBody, "utf-8");
+//                    return null;
+//                }
+//            }
+//
+//        };
+//
+//        requestQueue.add(stringRequest);
+//
+//    }
 
 
 
