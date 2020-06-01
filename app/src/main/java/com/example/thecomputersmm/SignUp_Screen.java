@@ -90,9 +90,9 @@ public class SignUp_Screen extends AppCompatActivity {
         stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.i("Resposta de login", response);
+                Log.i("Resposta de cadastro", response);
                 if (response.equals("TRUE")) {
-                    Log.i("Login response", response);
+                    Log.i("cadaster response", response);
                     startActivity(intent);
                     Toast toast = Toast.makeText(getApplicationContext(), "Registration completed successfully", Toast.LENGTH_LONG);
                     toast.show();
