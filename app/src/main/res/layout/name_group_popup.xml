@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E1DFDF">
+
+    <TextView
+        android:id="@+id/choosename"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:gravity="center_horizontal"
+        android:text="Choose a name for your chat!"
+        android:textSize="26sp"
+        tools:layout_editor_absoluteX="54dp"
+        tools:layout_editor_absoluteY="260dp" />
+
+    <EditText
+        android:id="@+id/groupname"
+        android:layout_width="358dp"
+        android:layout_height="44dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:textSize="20sp"
+        tools:layout_editor_absoluteX="26dp"
+        tools:layout_editor_absoluteY="343dp" />
+
+    <Button
+        android:id="@+id/newChat"
+        android:layout_width="129dp"
+        android:layout_height="67dp"
+        android:background="@mipmap/ic_launcher_coloredback_background"
+        android:onClick="openChat"
+        android:text="Create Chat!"
+        android:textAllCaps="false"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        tools:layout_editor_absoluteX="141dp"
+        tools:layout_editor_absoluteY="443dp" />
+</androidx.constraintlayout.widget.ConstraintLayout>

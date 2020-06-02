@@ -18,32 +18,37 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-            android:layout_width="395dp"
-            android:layout_height="63dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginTop="6dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="5dp"
             android:orientation="horizontal"
             android:textAlignment="center"
             android:translationX="5sp">
 
             <SearchView
                 android:id="@+id/SearchUser"
-                android:layout_width="353dp"
+                android:layout_width="257dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:background="#FFE6E5E5"
                 android:baselineAligned="false"
                 android:clipToPadding="false"
+                android:paddingStart="2dp"
                 android:translationY="5sp">
 
             </SearchView>
 
             <ImageButton
-                android:id="@+id/imageButtonOptions2"
+                android:id="@+id/ButtonOptions2"
                 android:layout_width="0dp"
                 android:layout_height="53dp"
                 android:layout_weight="1"
+                android:background="#00A16363"
                 android:contentDescription="@string/dots"
+                android:onClick="showMenu"
+                android:paddingEnd="3dp"
                 android:translationY="1sp"
                 app:srcCompat="@drawable/ic_action_dots" />
 
@@ -55,7 +60,8 @@
             android:layout_height="486dp"
             android:dividerHeight="0dp"
             android:footerDividersEnabled="false"
-            android:headerDividersEnabled="false" />
+            android:headerDividersEnabled="false"
+            android:paddingTop="5dp" />
 
         <ImageButton
             android:id="@+id/imageButtonStartNewConv"
@@ -66,6 +72,7 @@
             android:layout_marginTop="3dp"
             android:layout_marginEnd="5dp"
             android:layout_weight="1"
+            android:background="#002DB6AA"
             android:contentDescription="@string/newchat"
             android:onClick="openChat"
             app:layout_constraintBottom_toBottomOf="parent"

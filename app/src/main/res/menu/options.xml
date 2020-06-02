@@ -4,16 +4,19 @@
     <item
         android:id="@+id/change_password"
         android:title="Change Password"
+        android:onClick="openChangePassword"
         app:showAsAction="never"/>
 
     <item
         android:id="@+id/logout"
         android:title="Logout"
+        android:onClick="logout"
         app:showAsAction="never"/>
 
     <item
         android:id="@+id/delete_account"
         android:title="Delete Account"
+        android:onClick="deleteAccount"
         app:showAsAction="never"/>
 
 </menu>
