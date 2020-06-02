@@ -47,17 +47,18 @@ public class Search extends AppCompatActivity {
     }
 
     //ARRUMAR O POPUO WINDOW
-//    public void nameGroup(View view){
-//        LayoutInflater inflater = (LayoutInflater) Search.this.getSystemService(LAYOUT_INFLATER_SERVICE);
-//
-//        View pview;
-//        pview = inflater.inflate(R.layout.name_group_popup, null);
-//
-//        PopupWindow cp = new PopupWindow(pview, ViewGroup.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
-//        cp.showAtLocation(view, Gravity.CENTER, 0, 0);
-//      //  cp.update(0, 0, 500, 350);
-//
-//    }
+    public void nameGroup(View view){
+        LayoutInflater inflater = (LayoutInflater) Search.this.getSystemService(LAYOUT_INFLATER_SERVICE);
+
+        View pview;
+        pview = inflater.inflate(R.layout.name_group_popup, null);
+
+        PopupWindow cp = new PopupWindow(pview, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        cp.setFocusable(true);
+        cp.showAtLocation(view, Gravity.CENTER, 0, 0);
+        cp.update(0, 0, 900, 520);
+
+    }
 
     public void openChat (View view){
         Intent intent = new Intent(this, Chat.class);
