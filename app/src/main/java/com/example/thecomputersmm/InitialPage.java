@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,6 +16,15 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 public class InitialPage extends AppCompatActivity {
@@ -23,6 +33,9 @@ public class InitialPage extends AppCompatActivity {
 
     ArrayList<Chat_list> chats;
     Chat_listAdapter adapter;
+
+    StringRequest stringRequest;
+    RequestQueue requestQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,10 +85,32 @@ public class InitialPage extends AppCompatActivity {
     }
 
     public void logout (MenuItem item){
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        String url = "http://192.168.1.6:8080/login";
 
-        //COLOCAR AQUI A LÓGICA DO BANCO DE DADOS PARA EFETUAR O LOGOUT
+        final Intent intent = new Intent(this, MainActivity.class);
+
+        stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.i("Resposta de logout", response);
+                if (response.equals("NOT_LOGGED")){
+                    Log.i("Logout response", response);
+                    startActivity(intent);
+                } else {
+                    Toast toast = Toast.makeText(getApplicationContext(), "Couldn't logout", Toast.LENGTH_LONG);
+                    toast.show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("ERROR", error.toString());
+
+            }
+        });
+
+        requestQueue.add(stringRequest);
+
     }
 
     public void deleteAccount (MenuItem item){
