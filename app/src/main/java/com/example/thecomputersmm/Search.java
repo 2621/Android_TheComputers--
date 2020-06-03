@@ -24,6 +24,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
 import java.util.ArrayList;
 
@@ -42,6 +43,8 @@ public class Search extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        requestQueue = Volley.newRequestQueue(this);
 
         listViewUser = (ListView) findViewById(R.id.listViewUser);
         users = new ArrayList<User_list>();
@@ -90,7 +93,7 @@ public class Search extends AppCompatActivity {
     }
 
     public void logout (MenuItem item){
-        String url = "http://192.168.1.6:8080/login";
+        String url = "http://192.168.1.6:8080/logout";
 
         final Intent intent = new Intent(this, MainActivity.class);
 

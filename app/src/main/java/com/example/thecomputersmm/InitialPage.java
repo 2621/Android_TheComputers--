@@ -23,6 +23,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ public class InitialPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_initial_page);
 
+        requestQueue = Volley.newRequestQueue(this);
 
         listViewChat = (ListView) findViewById(R.id.listViewChat);
         chats = new ArrayList<Chat_list>();
@@ -85,7 +87,7 @@ public class InitialPage extends AppCompatActivity {
     }
 
     public void logout (MenuItem item){
-        String url = "http://192.168.1.6:8080/login";
+        String url = "http://192.168.1.6:8080/logout";
 
         final Intent intent = new Intent(this, MainActivity.class);
 
