@@ -74,7 +74,7 @@ public class SignUp_Screen extends AppCompatActivity {
             jsonBody.put("retype", confPasswordString);
             String requestBody = jsonBody.toString();
 
-            String url = "http://192.168.91.56:8080/newUser";
+            String url = "http://192.168.1.6:8080/newUser";
 
             signUp(url, requestBody);
         }
@@ -91,7 +91,7 @@ public class SignUp_Screen extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 Log.i("Resposta de cadastro", response);
-                if (response.equals("TRUE")) {
+                if (response.equals("true")) {
                     Log.i("cadaster response", response);
                     startActivity(intent);
                     Toast toast = Toast.makeText(getApplicationContext(), "Registration completed successfully", Toast.LENGTH_LONG);

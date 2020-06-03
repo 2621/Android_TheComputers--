@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         jsonBody.put("password", passwordString);
         String requestBody = jsonBody.toString();
 
-        String url = "http://192.168.91.56:8080/login";
+        String url = "http://192.168.1.6:8080/login";
 
         login(url, requestBody);
 
