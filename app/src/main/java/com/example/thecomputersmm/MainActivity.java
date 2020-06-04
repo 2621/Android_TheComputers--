@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
     private void login(String url, final String requestBody){
 
         final Intent intent = new Intent(this, InitialPage.class);
+        intent.putExtra("username", username.getText().toString());
 
         stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override

@@ -31,6 +31,7 @@ import java.util.ArrayList;
 public class InitialPage extends AppCompatActivity {
 
     ListView listViewChat;
+    String username;
 
     ArrayList<Chat_list> chats;
     Chat_listAdapter adapter;
@@ -42,6 +43,9 @@ public class InitialPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_initial_page);
+
+        Bundle extras = getIntent().getExtras();
+        username = extras.getString("username");
 
         requestQueue = Volley.newRequestQueue(this);
 
@@ -70,6 +74,7 @@ public class InitialPage extends AppCompatActivity {
 
     public void openSearch (View view){
         Intent intent = new Intent(this, Search.class);
+        intent.putExtra("username", username);
         startActivity(intent);
     }
 
