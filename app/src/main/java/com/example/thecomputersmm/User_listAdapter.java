@@ -31,7 +31,7 @@ public class User_listAdapter extends ArrayAdapter<User_list> {
 
         TextView usernameText = (TextView) rowView.findViewById(R.id.nameUser);
 
-        usernameText.setText(users.get(position).name);
+        usernameText.setText(users.get(position).username);
 
 
         return rowView;
