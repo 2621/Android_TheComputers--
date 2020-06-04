@@ -21,6 +21,7 @@ import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -36,9 +37,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 public class Search extends AppCompatActivity {
 
@@ -95,18 +95,26 @@ public class Search extends AppCompatActivity {
                         Log.e("volleyError",error.toString());
 
                     }
-                }){
-                    @Override
-                    public Map<String, String> getHeaders() {
-                        Map<String, String> params = new HashMap<String, String>();
-                        params.put("Transfer-Encoding", "chunked");
-                        params.put("Content-Type", "application/json");
+                });
+//        {
+//                    @Override
+//                    public Map<String, String> getHeaders() {
+//                        Map<String, String> params = new HashMap<String, String>();
+//                        params.put("transfer-encoding", "chucked");
+//                        params.put("content-type", "application/json");
+//
+//                        return params;
+//                    }
+//                };
 
-                        return params;
-                    }
-                };
+//        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+//                100,
+//                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+//                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
 
         requestQueue.add(jsonObjectRequest);
+
     }
 
     private void parseJSON(String jsonString) {
