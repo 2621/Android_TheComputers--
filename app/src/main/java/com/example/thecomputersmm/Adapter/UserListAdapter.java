@@ -1,4 +1,5 @@
-package com.example.thecomputersmm;
+package com.example.thecomputersmm.Adapter;
+
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -7,14 +8,17 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.example.thecomputersmm.R;
+import com.example.thecomputersmm.Command.UserCommand;
+
 import java.util.ArrayList;
 
-public class User_listAdapter extends ArrayAdapter<User_list> {
+public class UserListAdapter extends ArrayAdapter<UserCommand> {
     private final Activity context;
 
-    private final ArrayList<User_list> users;
+    private final ArrayList<UserCommand> users;
 
-    public User_listAdapter(Activity context, int layoutItem, ArrayList<User_list> users) {
+    public UserListAdapter(Activity context, int layoutItem, ArrayList<UserCommand> users) {
         super(context, layoutItem, users);
         // TODO Auto-generated constructor stub
 

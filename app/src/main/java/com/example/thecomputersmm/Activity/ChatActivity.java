@@ -1,4 +1,4 @@
-package com.example.thecomputersmm;
+package com.example.thecomputersmm.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,17 +9,21 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.thecomputersmm.Command.MessageCommand;
+import com.example.thecomputersmm.Adapter.MessageListAdapter;
+import com.example.thecomputersmm.R;
+
 import java.util.ArrayList;
 
-public class Chat extends AppCompatActivity {
+public class ChatActivity extends AppCompatActivity {
 
     private TextView textViewName;
     private EditText editMessage;
 
     private ListView listViewMessage;
 
-    private ArrayList<Message_list> messages;
-    private Message_listAdapter adapter;
+    private ArrayList<MessageCommand> messages;
+    private MessageListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,11 +36,11 @@ public class Chat extends AppCompatActivity {
         listViewMessage.setDivider(null);
         listViewMessage.setDividerHeight(0);
 
-        messages = new ArrayList<Message_list>();
-        messages.add(new Message_list("me", "Olha essa nova mensagem"));
-        messages.add(new Message_list("Amigo", "Responded"));
+        messages = new ArrayList<MessageCommand>();
+        messages.add(new MessageCommand("me", "Olha essa nova mensagem"));
+        messages.add(new MessageCommand("Amigo", "Responded"));
 
-        adapter = new Message_listAdapter(this, messages);
+        adapter = new MessageListAdapter(this, messages);
 
 
         listViewMessage.setAdapter(adapter);
@@ -47,7 +51,7 @@ public class Chat extends AppCompatActivity {
 
         String message = editMessage.getText().toString();
 
-        messages.add(new Message_list("me", message));
+        messages.add(new MessageCommand("me", message));
         adapter.notifyDataSetChanged();
 
         editMessage.setText("");

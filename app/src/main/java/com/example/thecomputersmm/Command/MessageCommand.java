@@ -1,4 +1,4 @@
-package com.example.thecomputersmm;
+package com.example.thecomputersmm.Command;
 
 //public class Message_list {
 //    String message = "";
@@ -9,11 +9,11 @@ package com.example.thecomputersmm;
 //}
 
 
-    public class Message_list {
+    public class MessageCommand {
         private String idUser;
         private String message;
 
-        public Message_list(String idUser, String message) {
+        public MessageCommand(String idUser, String message) {
             this.idUser = idUser;
             this.message = message;
         }

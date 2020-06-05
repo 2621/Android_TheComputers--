@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@mipmap/ic_launcher_coloredback_background"
-    tools:context=".Chat">
+    tools:context=".Activity.ChatActivity">
 
     <!--usar list view, pode tirar o scrow view -->
 

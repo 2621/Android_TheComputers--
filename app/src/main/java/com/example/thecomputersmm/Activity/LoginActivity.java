@@ -1,4 +1,4 @@
-package com.example.thecomputersmm;
+package com.example.thecomputersmm.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,13 +17,14 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.thecomputersmm.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 
-public class MainActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     EditText password;
     EditText username;
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     public void openSignUpScreen (View view){
 
         //para chamar a tela de cadastro e passar os parâmetros de username e password
-        Intent intent = new Intent(this, SignUp_Screen.class);
+        Intent intent = new Intent(this, SignUpActivity.class);
 
         startActivity(intent);
     }
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void login(String url, final String requestBody){
 
-        final Intent intent = new Intent(this, InitialPage.class);
+        final Intent intent = new Intent(this, InitialPageActivity.class);
         intent.putExtra("username", username.getText().toString());
 
         stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {

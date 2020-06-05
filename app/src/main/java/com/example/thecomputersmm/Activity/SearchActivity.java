@@ -1,4 +1,4 @@
-package com.example.thecomputersmm;
+package com.example.thecomputersmm.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,7 +6,6 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -20,19 +19,18 @@ import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.thecomputersmm.Adapter.UserListAdapter;
+import com.example.thecomputersmm.R;
+import com.example.thecomputersmm.Command.UserCommand;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -43,12 +41,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Search extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity {
 
     ListView listViewUser;
 
-    ArrayList<User_list> users;
-    User_listAdapter adapter;
+    ArrayList<UserCommand> users;
+    UserListAdapter adapter;
 
     StringRequest stringRequest;
     JsonArrayRequest jsonArrayRequest;
@@ -119,21 +117,21 @@ public class Search extends AppCompatActivity {
     }
 
     private void parseJSON(String jsonString) {
-        users = new ArrayList<User_list>();
+        users = new ArrayList<UserCommand>();
         Gson gson = new Gson();
-        Type type = new TypeToken<List<User_list>>(){}.getType();
-        List<User_list> userList = gson.fromJson(jsonString, type);
-        for (User_list user : userList){
-            users.add(new User_list(user.username));
+        Type type = new TypeToken<List<UserCommand>>(){}.getType();
+        List<UserCommand> userList = gson.fromJson(jsonString, type);
+        for (UserCommand user : userList){
+            users.add(new UserCommand(user.username));
         }
         //carregar na listView os usuários
-        adapter = new User_listAdapter(this, R.layout.item_user_list,users);
+        adapter = new UserListAdapter(this, R.layout.item_user_list,users);
         listViewUser.setAdapter(adapter);
     }
 
     //ARRUMAR O POPUO WINDOW
     public void nameGroup(View view){
-        LayoutInflater inflater = (LayoutInflater) Search.this.getSystemService(LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) SearchActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
 
         View pview;
         pview = inflater.inflate(R.layout.name_group_popup, null);
@@ -146,7 +144,7 @@ public class Search extends AppCompatActivity {
     }
 
     public void openChat (View view){
-        Intent intent = new Intent(this, Chat.class);
+        Intent intent = new Intent(this, ChatActivity.class);
         startActivity(intent);
     }
 
@@ -159,14 +157,14 @@ public class Search extends AppCompatActivity {
 
 
     public void openChangePassword (MenuItem item){
-        Intent intent = new Intent(this, Change_Password.class);
+        Intent intent = new Intent(this, ChangePasswordActivity.class);
         startActivity(intent);
     }
 
     public void logout (MenuItem item){
         String url = "http://192.168.1.6:8080/logout";
 
-        final Intent intent = new Intent(this, MainActivity.class);
+        final Intent intent = new Intent(this, LoginActivity.class);
 
         stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
@@ -193,7 +191,7 @@ public class Search extends AppCompatActivity {
     }
 
     public void deleteAccount (MenuItem item){
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
 
         //COLOCAR AQUI A LÓGICA DO BANCO DE DADOS PARA DELETAR A CONTA (JÁ EFETUA O LOGOUT TAMBÉM

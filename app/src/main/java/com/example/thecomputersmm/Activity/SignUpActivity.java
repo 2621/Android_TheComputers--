@@ -1,4 +1,4 @@
-package com.example.thecomputersmm;
+package com.example.thecomputersmm.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,13 +17,15 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.thecomputersmm.Activity.InitialPageActivity;
+import com.example.thecomputersmm.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 
-public class SignUp_Screen extends AppCompatActivity {
+public class SignUpActivity extends AppCompatActivity {
 
     EditText password;
     EditText confPassword;
@@ -85,7 +87,7 @@ public class SignUp_Screen extends AppCompatActivity {
 
     private void signUp(String url, final String requestBody) {
 
-        final Intent intent = new Intent(this, InitialPage.class);
+        final Intent intent = new Intent(this, InitialPageActivity.class);
 
         stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override

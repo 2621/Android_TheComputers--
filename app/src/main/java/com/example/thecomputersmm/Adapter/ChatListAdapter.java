@@ -1,4 +1,7 @@
-package com.example.thecomputersmm;
+package com.example.thecomputersmm.Adapter;
+
+import com.example.thecomputersmm.Command.ChatListCommand;
+import com.example.thecomputersmm.R;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -9,12 +12,12 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class Chat_listAdapter extends ArrayAdapter<Chat_list> {
+public class ChatListAdapter extends ArrayAdapter<ChatListCommand> {
     private final Activity context;
 
-    private final ArrayList<Chat_list> chats;
+    private final ArrayList<ChatListCommand> chats;
 
-    public Chat_listAdapter(Activity context, int layoutItem, ArrayList<Chat_list> chats) {
+    public ChatListAdapter(Activity context, int layoutItem, ArrayList<ChatListCommand> chats) {
         super(context, layoutItem, chats);
         // TODO Auto-generated constructor stub
 

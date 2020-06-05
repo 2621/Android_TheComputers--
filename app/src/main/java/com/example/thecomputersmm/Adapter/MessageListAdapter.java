@@ -1,4 +1,7 @@
-package com.example.thecomputersmm;
+package com.example.thecomputersmm.Adapter;
+
+import com.example.thecomputersmm.R;
+import com.example.thecomputersmm.Command.MessageCommand;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -9,10 +12,10 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class Message_listAdapter extends ArrayAdapter<Message_list> {
+public class MessageListAdapter extends ArrayAdapter<MessageCommand> {
     private final Activity context;
 
-    private final ArrayList<Message_list> messages;
+    private final ArrayList<MessageCommand> messages;
 
 //    public Message_listAdapter(Activity context, int layoutItem, ArrayList<Message_list> messages) {
 //        super(context, layoutItem, messages);
@@ -22,7 +25,7 @@ public class Message_listAdapter extends ArrayAdapter<Message_list> {
 //        this.messages = messages;
 //
 //    }
-    public Message_listAdapter(Activity context, ArrayList<Message_list> messages) {
+    public MessageListAdapter(Activity context, ArrayList<MessageCommand> messages) {
         super(context, 0, messages);
         // TODO Auto-generated constructor stub
 
