@@ -1,11 +1,11 @@
 package com.example.thecomputersmm.Command;
 
 public class ChatListCommand {
-    public String name;
-    public String text;
+    public String roomName;
+    public String lastMessage;
 
-    public ChatListCommand(String name, String text) {
-        this.name = name;
-        this.text = text;
+    public ChatListCommand(String roomName, String lastMessage) {
+        this.roomName = roomName;
+        this.lastMessage = lastMessage;
     }
 }

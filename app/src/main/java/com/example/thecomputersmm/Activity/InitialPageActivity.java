@@ -5,12 +5,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -135,7 +138,7 @@ public class InitialPageActivity extends AppCompatActivity {
                         Log.i("resposta onResponse", response.toString());
                         try {
                             parseJSON(response.toString());
-                        } catch (JSONException e) {
+                        } catch (JSONException | InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
@@ -195,17 +198,24 @@ public class InitialPageActivity extends AppCompatActivity {
         requestQueue.add(jsonObjectRequest);
     }
 
-    private void parseJSON(String jsonString) throws JSONException {
+    private void parseJSON(String jsonString) throws JSONException, InterruptedException {
         Gson gson = new Gson();
         Type type = new TypeToken<List<RoomCommand>>(){}.getType();
         List<RoomCommand> roomList = gson.fromJson(jsonString, type);
+
+        Integer i=0;
         for (RoomCommand room : roomList){
             loadLastMessage(room);
-        }
-        Log.i("verificacao de caminho", "não chego aqui por algum motivo");
+            Log.e("for do parsoJson", Integer.toString(i));
+            i++;
 
-//        adapter = new ChatListAdapter(this, R.layout.item_chat_list,chats);
-//        listViewChat.setAdapter(adapter);
+        }
+
+        Thread.sleep(1000);
+
+        Log.i("passei", "passsei na thread");
+        adapter = new ChatListAdapter(this, R.layout.item_chat_list,chats);
+        listViewChat.setAdapter(adapter);
 
     }
 
@@ -215,11 +225,32 @@ public class InitialPageActivity extends AppCompatActivity {
         Type type = new TypeToken<MessageCommand>(){}.getType();
         MessageCommand lastMessage = gson.fromJson(jsonString, type);
 
-        chats.add(new ChatListCommand(room.getName(), lastMessage.getContent()));
+//        chats.add(new ChatListCommand(room.getName(), lastMessage.getContent()));
         Log.i("RoomMessage", room.getName());
         Log.i("LastMessage", lastMessage.getContent());
 
+
+
+        Log.d("Estou colocando na view", "passou aqui");
+
     }
+
+//    public View getView(View view) {
+//
+//        LayoutInflater inflater=this.getLayoutInflater();
+//
+//        View rowView=inflater.inflate(R.layout.item_chat_list, null,true);
+//
+//        TextView nameText = (TextView) rowView.findViewById(R.id.chatName);
+//        TextView textText = (TextView) rowView.findViewById(R.id.chatText);
+//
+////        nameText.setText(room.getName());
+////        textText.setText(lastMessage.getContent());
+//
+//
+//        return rowView;
+//
+//    };
 
 
     public void showMenu(View v) {
