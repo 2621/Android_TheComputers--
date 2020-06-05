@@ -1,29 +1,50 @@
 package com.example.thecomputersmm.Command;
 
-//public class Message_list {
-//    String message = "";
-//
-//    public Message_list(String message) {
-//        this.message = message;
-//    }
-//}
+public class MessageCommand {
+    private String content;
+    private String username;
+    private Integer userId;
+    private Integer roomId;
 
-
-    public class MessageCommand {
-        private String idUser;
-        private String message;
-
-        public MessageCommand(String idUser, String message) {
-            this.idUser = idUser;
-            this.message = message;
-        }
-
-        public String getIdUser() {return  idUser;};
-
-        public void setIdUser(String idUser) {this.idUser = idUser;}
-
-        public String getMessage() {return message;}
-
-        public void setMessage(String message) {this.message = message;}
+    public MessageCommand(String content, String username, Integer userId, Integer roomId)
+    {
+        this.content = content;
+        this.username = username;
+        this.userId = userId;
+        this.roomId = roomId;
     }
 
+    public MessageCommand () {}
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Integer getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(Integer roomId) {
+        this.roomId = roomId;
+    }
+}

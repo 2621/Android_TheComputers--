@@ -93,7 +93,7 @@
         android:layout_height="61dp"
         android:background="@drawable/custom_rounded_corners"
         android:fontFamily="sans-serif-condensed-medium"
-        android:onClick="openInitialPage"
+        android:onClick="login"
         android:text="LOGIN"
         android:textColor="#FFFFFF"
         android:textColorLink="#1C1111"

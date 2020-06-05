@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void openInitialPage (View view) throws JSONException {
+    public void login(View view) throws JSONException {
         String usernameString = username.getText().toString();
         String passwordString = password.getText().toString();
 
@@ -68,11 +68,11 @@ public class LoginActivity extends AppCompatActivity {
 
         String url = "http://192.168.1.6:8080/login";
 
-        login(url, requestBody);
+        loginConnection(url, requestBody);
 
     }
 
-    private void login(String url, final String requestBody){
+    public void loginConnection(String url, final String requestBody){
 
         final Intent intent = new Intent(this, InitialPageActivity.class);
         intent.putExtra("username", username.getText().toString());

@@ -9,7 +9,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.thecomputersmm.Command.MessageCommand;
+import com.example.thecomputersmm.Command.Message2Command;
 import com.example.thecomputersmm.Adapter.MessageListAdapter;
 import com.example.thecomputersmm.R;
 
@@ -22,7 +22,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private ListView listViewMessage;
 
-    private ArrayList<MessageCommand> messages;
+    private ArrayList<Message2Command> messages;
     private MessageListAdapter adapter;
 
     @Override
@@ -36,9 +36,9 @@ public class ChatActivity extends AppCompatActivity {
         listViewMessage.setDivider(null);
         listViewMessage.setDividerHeight(0);
 
-        messages = new ArrayList<MessageCommand>();
-        messages.add(new MessageCommand("me", "Olha essa nova mensagem"));
-        messages.add(new MessageCommand("Amigo", "Responded"));
+        messages = new ArrayList<Message2Command>();
+        messages.add(new Message2Command("me", "Olha essa nova mensagem"));
+        messages.add(new Message2Command("Amigo", "Responded"));
 
         adapter = new MessageListAdapter(this, messages);
 
@@ -51,7 +51,7 @@ public class ChatActivity extends AppCompatActivity {
 
         String message = editMessage.getText().toString();
 
-        messages.add(new MessageCommand("me", message));
+        messages.add(new Message2Command("me", message));
         adapter.notifyDataSetChanged();
 
         editMessage.setText("");
