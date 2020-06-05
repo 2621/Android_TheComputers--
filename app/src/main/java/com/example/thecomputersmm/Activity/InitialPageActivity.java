@@ -19,11 +19,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.thecomputersmm.Adapter.UserListAdapter;
 import com.example.thecomputersmm.Command.ChatListCommand;
 import com.example.thecomputersmm.Adapter.ChatListAdapter;
+import com.example.thecomputersmm.Command.MessageCommand;
 import com.example.thecomputersmm.Command.RoomCommand;
 import com.example.thecomputersmm.Command.UserCommand;
 import com.example.thecomputersmm.R;
@@ -45,11 +47,11 @@ public class InitialPageActivity extends AppCompatActivity {
     String username;
 
     ArrayList<ChatListCommand> chats;
-    ArrayList<RoomCommand> rooms;
     ChatListAdapter adapter;
 
     StringRequest stringRequest;
     JsonArrayRequest jsonArrayRequest;
+    JsonObjectRequest jsonObjectRequest;
     RequestQueue requestQueue;
 
     @Override
@@ -64,19 +66,21 @@ public class InitialPageActivity extends AppCompatActivity {
 
         listViewChat = (ListView) findViewById(R.id.listViewChat);
 
+        chats = new ArrayList<ChatListCommand>();
+
         try {
             loadRooms();
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        chats = new ArrayList<ChatListCommand>();
-        chats.add(new ChatListCommand("Sarah", "Oi"));
-        chats.add(new ChatListCommand("Ale", "Ate mais"));
 
-        adapter = new ChatListAdapter(this, R.layout.item_chat_list,chats);
+        //Já está sendo pego tanto as rooms quanto as mensagens
+        //Você pode testar isso colocando as duas linhas abaixo por exemplo no método openSearch e testar clicando no botão de +, estamos conseguindo carregar os dados
+        //mas acho que tem que ser feito em um thread a parte, não sei...
 
+//        adapter = new ChatListAdapter(this, R.layout.item_chat_list,chats);
+//        listViewChat.setAdapter(adapter);
 
-        listViewChat.setAdapter(adapter);
 
         listViewChat.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -91,6 +95,15 @@ public class InitialPageActivity extends AppCompatActivity {
 
     }
 
+    public void openSearch (View view){
+        Intent intent = new Intent(this, SearchActivity.class);
+        intent.putExtra("username", username);
+        startActivity(intent);
+
+//        adapter = new ChatListAdapter(this, R.layout.item_chat_list,chats);
+//        listViewChat.setAdapter(adapter);
+    }
+
     public void loadRooms() throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("username", username);
@@ -101,7 +114,18 @@ public class InitialPageActivity extends AppCompatActivity {
         loadRoomsConnection(url, requestBody);
     }
 
-    public void loadRoomsConnection(String url, final String requestBody) {
+    public void loadLastMessage(RoomCommand room) throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", room.getId());
+        jsonObject.put("name", room.getName());
+
+        String requestBody = jsonObject.toString();
+        String url = "http://192.168.1.6:8080/getLastMessage";
+
+        loadLastMessageConnection(url, requestBody, room);
+    }
+
+    public void loadRoomsConnection(String url, final String requestBody) throws JSONException{
 
         //o retorno de getUsers é um JSONArray, e o body é um JsonObject
         jsonArrayRequest = new JsonArrayRequest
@@ -109,7 +133,11 @@ public class InitialPageActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONArray response) {
                         Log.i("resposta onResponse", response.toString());
-                        parseJSON(response.toString());
+                        try {
+                            parseJSON(response.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -134,22 +162,65 @@ public class InitialPageActivity extends AppCompatActivity {
         requestQueue.add(jsonArrayRequest);
     }
 
-    private void parseJSON(String jsonString) {
-        rooms = new ArrayList<RoomCommand>();
+    public void loadLastMessageConnection(String url, final String requestBody, final RoomCommand room) {
+
+        //o retorno de getUsers é um JSONObject, e o body é um JsonObject
+        jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i("resposta onResponse", response.toString());
+                        parseJSONRoom(response.toString(), room);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("volleyError",error.toString());
+                    }
+                }) { //adicionar um body jsonObject
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+            @Override
+            public byte[] getBody() {
+                try {
+                    return requestBody == null ? null : requestBody.getBytes("utf-8");
+                } catch (UnsupportedEncodingException uee) {
+                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", requestBody, "utf-8");
+                    return null;
+                }
+            }
+        };
+        requestQueue.add(jsonObjectRequest);
+    }
+
+    private void parseJSON(String jsonString) throws JSONException {
         Gson gson = new Gson();
         Type type = new TypeToken<List<RoomCommand>>(){}.getType();
         List<RoomCommand> roomList = gson.fromJson(jsonString, type);
         for (RoomCommand room : roomList){
-            rooms.add(new RoomCommand(room.getId(), room.getName()));
-            Log.i("rooms", room.getName());
+            loadLastMessage(room);
         }
+        Log.i("verificacao de caminho", "não chego aqui por algum motivo");
+
+//        adapter = new ChatListAdapter(this, R.layout.item_chat_list,chats);
+//        listViewChat.setAdapter(adapter);
+
     }
 
-    public void openSearch (View view){
-        Intent intent = new Intent(this, SearchActivity.class);
-        intent.putExtra("username", username);
-        startActivity(intent);
+    private void parseJSONRoom(String jsonString, RoomCommand room) {
+
+        Gson gson = new Gson();
+        Type type = new TypeToken<MessageCommand>(){}.getType();
+        MessageCommand lastMessage = gson.fromJson(jsonString, type);
+
+        chats.add(new ChatListCommand(room.getName(), lastMessage.getContent()));
+        Log.i("RoomMessage", room.getName());
+        Log.i("LastMessage", lastMessage.getContent());
+
     }
+
 
     public void showMenu(View v) {
         PopupMenu popup = new PopupMenu(this, v);
