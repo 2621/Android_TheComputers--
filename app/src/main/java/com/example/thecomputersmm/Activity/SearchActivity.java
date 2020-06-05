@@ -13,12 +13,14 @@ import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -44,6 +46,7 @@ import java.util.List;
 public class SearchActivity extends AppCompatActivity {
 
     ListView listViewUser;
+    EditText roomname;
 
     ArrayList<UserCommand> users;
     UserListAdapter adapter;
@@ -62,6 +65,8 @@ public class SearchActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         username = extras.getString("username");
 
+        roomname = (EditText) findViewById(R.id.roomname);
+
         listViewUser = (ListView) findViewById(R.id.listViewUser);
 
         requestQueue = Volley.newRequestQueue(this);
@@ -71,6 +76,8 @@ public class SearchActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+//        roomName = (EditText) findViewById(R.id.roomName);
     }
 
     public void loadUsers() throws JSONException{
@@ -129,8 +136,8 @@ public class SearchActivity extends AppCompatActivity {
         listViewUser.setAdapter(adapter);
     }
 
-    //ARRUMAR O POPUO WINDOW
-    public void nameGroup(View view){
+    public void roomName(View view){
+
         LayoutInflater inflater = (LayoutInflater) SearchActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
 
         View pview;
@@ -143,9 +150,63 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
-    public void openChat (View view){
-        Intent intent = new Intent(this, ChatActivity.class);
-        startActivity(intent);
+    public void createRoom(View view) throws JSONException {
+
+        //aqui está com problema, roomName está nulo
+        String roomNameString = roomname.getText().toString();
+
+//        Log.i("valor do roomName", roomNameString);
+
+        JSONObject jsonBody = new JSONObject();
+        jsonBody.put("roomName", roomNameString);
+        String requestBody = jsonBody.toString();
+
+        String url = "http://192.168.1.6:8080/createRoom";
+
+        createRoomConnection(url, requestBody);
+    }
+
+    public void createRoomConnection(String url, final String requestBody){
+
+        final Intent intent = new Intent(this, ChatActivity.class);
+
+        stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.i("Resposta de create room", response);
+                if (response.equals("true")){
+                    startActivity(intent);
+                } else {
+                    Toast toast = Toast.makeText(getApplicationContext(), "This chat name is already in use. Please, choose another one.", Toast.LENGTH_LONG);
+                    Log.i("JSON", requestBody);
+                    toast.show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("ERROR", error.toString());
+
+            }
+        }) {
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                try {
+                    return requestBody == null ? null : requestBody.getBytes("utf-8");
+                } catch (UnsupportedEncodingException uee) {
+                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", requestBody, "utf-8");
+                    return null;
+                }
+            }
+
+        };
+
+        requestQueue.add(stringRequest);
     }
 
     public void showMenu(View v) {

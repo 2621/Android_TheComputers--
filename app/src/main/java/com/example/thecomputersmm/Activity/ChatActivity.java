@@ -2,6 +2,7 @@ package com.example.thecomputersmm.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,16 +20,30 @@ public class ChatActivity extends AppCompatActivity {
 
     private TextView textViewName;
     private EditText editMessage;
+    private TextView editRoomname;
 
     private ListView listViewMessage;
 
     private ArrayList<Message2Command> messages;
     private MessageListAdapter adapter;
 
+    private String username;
+    private String roomname;
+    private Integer roomId;
+
+    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
+        Bundle extras = getIntent().getExtras();
+        username = extras.getString("username");
+        roomname = extras.getString("roomname");
+        roomId = extras.getInt("roomId");
+
+        editRoomname =  (TextView) findViewById(R.id.textViewRoomName);
+        editRoomname.setText(roomname);
 
         editMessage = findViewById(R.id.editMessage);
 

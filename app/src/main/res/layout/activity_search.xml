@@ -74,7 +74,7 @@
             android:layout_weight="1"
             android:background="#002DB6AA"
             android:contentDescription="@string/newchat"
-            android:onClick="nameGroup"
+            android:onClick="roomName"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/listViewUser"

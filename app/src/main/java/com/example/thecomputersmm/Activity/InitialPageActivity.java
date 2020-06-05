@@ -5,15 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -25,12 +22,10 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.thecomputersmm.Adapter.UserListAdapter;
 import com.example.thecomputersmm.Command.ChatListCommand;
 import com.example.thecomputersmm.Adapter.ChatListAdapter;
 import com.example.thecomputersmm.Command.MessageCommand;
 import com.example.thecomputersmm.Command.RoomCommand;
-import com.example.thecomputersmm.Command.UserCommand;
 import com.example.thecomputersmm.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -50,12 +45,16 @@ public class InitialPageActivity extends AppCompatActivity {
     String username;
 
     ArrayList<ChatListCommand> chats;
+    List<RoomCommand> roomList;
     ChatListAdapter adapter;
 
     StringRequest stringRequest;
     JsonArrayRequest jsonArrayRequest;
     JsonObjectRequest jsonObjectRequest;
     RequestQueue requestQueue;
+
+    Integer roomListSize;
+    Integer contador;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,21 +76,14 @@ public class InitialPageActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        //Já está sendo pego tanto as rooms quanto as mensagens
-        //Você pode testar isso colocando as duas linhas abaixo por exemplo no método openSearch e testar clicando no botão de +, estamos conseguindo carregar os dados
-        //mas acho que tem que ser feito em um thread a parte, não sei...
-
-//        adapter = new ChatListAdapter(this, R.layout.item_chat_list,chats);
-//        listViewChat.setAdapter(adapter);
-
-
         listViewChat.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 Intent intent = new Intent(InitialPageActivity.this, ChatActivity.class);
+                intent.putExtra("roomId", roomList.get(position).getId());
+                intent.putExtra("roomname", roomList.get(position).getName());
+                intent.putExtra("username", username);
                 startActivity(intent);
-
             }
 
         });
@@ -102,9 +94,6 @@ public class InitialPageActivity extends AppCompatActivity {
         Intent intent = new Intent(this, SearchActivity.class);
         intent.putExtra("username", username);
         startActivity(intent);
-
-//        adapter = new ChatListAdapter(this, R.layout.item_chat_list,chats);
-//        listViewChat.setAdapter(adapter);
     }
 
     public void loadRooms() throws JSONException {
@@ -137,7 +126,7 @@ public class InitialPageActivity extends AppCompatActivity {
                     public void onResponse(JSONArray response) {
                         Log.i("resposta onResponse", response.toString());
                         try {
-                            parseJSON(response.toString());
+                            parseJSONRoom(response.toString());
                         } catch (JSONException | InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -173,7 +162,7 @@ public class InitialPageActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.i("resposta onResponse", response.toString());
-                        parseJSONRoom(response.toString(), room);
+                        parseJSONLastMessage(response.toString(), room);
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -198,41 +187,31 @@ public class InitialPageActivity extends AppCompatActivity {
         requestQueue.add(jsonObjectRequest);
     }
 
-    private void parseJSON(String jsonString) throws JSONException, InterruptedException {
+    private void parseJSONRoom(String jsonString) throws JSONException, InterruptedException {
         Gson gson = new Gson();
         Type type = new TypeToken<List<RoomCommand>>(){}.getType();
-        List<RoomCommand> roomList = gson.fromJson(jsonString, type);
+        roomList = gson.fromJson(jsonString, type);
 
-        Integer i=0;
+        roomListSize = roomList.size();
+        Log.i("roomListSize", Integer.toString(roomListSize));
+        contador = 0;
         for (RoomCommand room : roomList){
+            contador++;
             loadLastMessage(room);
-            Log.e("for do parsoJson", Integer.toString(i));
-            i++;
-
         }
-
-        Thread.sleep(1000);
-
-        Log.i("passei", "passsei na thread");
-        adapter = new ChatListAdapter(this, R.layout.item_chat_list,chats);
-        listViewChat.setAdapter(adapter);
-
     }
 
-    private void parseJSONRoom(String jsonString, RoomCommand room) {
+    private void parseJSONLastMessage(String jsonString, RoomCommand room) {
 
         Gson gson = new Gson();
         Type type = new TypeToken<MessageCommand>(){}.getType();
         MessageCommand lastMessage = gson.fromJson(jsonString, type);
 
-//        chats.add(new ChatListCommand(room.getName(), lastMessage.getContent()));
-        Log.i("RoomMessage", room.getName());
-        Log.i("LastMessage", lastMessage.getContent());
-
-
-
-        Log.d("Estou colocando na view", "passou aqui");
-
+        chats.add(new ChatListCommand(room.getName(), lastMessage.getContent()));
+        if(contador == roomListSize){
+            adapter = new ChatListAdapter(this, R.layout.item_chat_list,chats);
+            listViewChat.setAdapter(adapter);
+        }
     }
 
 //    public View getView(View view) {
@@ -292,7 +271,6 @@ public class InitialPageActivity extends AppCompatActivity {
         });
 
         requestQueue.add(stringRequest);
-
     }
 
     public void deleteAccount (MenuItem item){
@@ -301,8 +279,4 @@ public class InitialPageActivity extends AppCompatActivity {
 
         //COLOCAR AQUI A LÓGICA DO BANCO DE DADOS PARA DELETAR A CONTA (JÁ EFETUA O LOGOUT TAMBÉM
     }
-
-
-
-
 }
