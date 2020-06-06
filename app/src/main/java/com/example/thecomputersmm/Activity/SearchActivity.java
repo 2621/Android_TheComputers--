@@ -8,6 +8,7 @@ import java.lang.reflect.Type;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -52,6 +53,7 @@ public class SearchActivity extends AppCompatActivity {
 
     ArrayList<UserCommand> users;
     UserListAdapter adapter;
+    long[] checkedItems;
 
     StringRequest stringRequest;
     JsonArrayRequest jsonArrayRequest;
@@ -136,7 +138,12 @@ public class SearchActivity extends AppCompatActivity {
         listViewUser.setAdapter(adapter);
     }
 
-    public void roomName(View view){
+    public void roomName(View view) throws JSONException {
+
+        listViewUser.getCheckedItemPositions();
+
+        checkedItems = listViewUser.getCheckedItemIds();
+        int checkedItemsCount = listViewUser.getCheckedItemCount();
 
         LayoutInflater inflater = (LayoutInflater) SearchActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
 
@@ -149,6 +156,79 @@ public class SearchActivity extends AppCompatActivity {
         cp.update(0, 0, 900, 520);
 
         roomname = (EditText) pview.findViewById(R.id.roomname);
+
+//        if(checkedItemsCount == 0){
+//            Toast toast = Toast.makeText(getApplicationContext(), "Please select users to your chat", Toast.LENGTH_LONG);
+//            toast.show();
+//        }
+//        else{
+//            LayoutInflater inflater = (LayoutInflater) SearchActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
+//
+//            View pview;
+//            pview = inflater.inflate(R.layout.name_group_popup, null);
+//
+//            PopupWindow cp = new PopupWindow(pview, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+//            cp.setFocusable(true);
+//            cp.showAtLocation(view, Gravity.CENTER, 0, 0);
+//            cp.update(0, 0, 900, 520);
+//
+//            roomname = (EditText) pview.findViewById(R.id.roomname);
+//        }
+    }
+
+    public void addUsers() throws JSONException {
+        for (long checkedItem: checkedItems) {
+                addUserToRoom(users.get((int)checkedItem));
+        }
+
+//        addUserToRoom(new UserCommand("user4"));
+//        addUserToRoom(new UserCommand("user5"));
+    }
+
+    public void addUserToRoom(UserCommand user) throws JSONException {
+        JSONObject jsonBody = new JSONObject();
+        jsonBody.put("username", user.username);
+        jsonBody.put("roomName", roomname.getText().toString());
+        String requestBody = jsonBody.toString();
+
+        String url = Url.addUserToRoom;
+
+        addUserToRoomConnection(url, requestBody, user);
+    }
+
+    public void addUserToRoomConnection(String url, final String requestBody, final UserCommand user){
+        stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.i("Resposta de create room", response);
+                if (response.equals("false")){
+                    Toast toast = Toast.makeText(getApplicationContext(), user.username+ "cannot added to this chat", Toast.LENGTH_LONG);
+                    toast.show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("ERROR", error.toString());
+            }
+        }) {
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                try {
+                    return requestBody == null ? null : requestBody.getBytes("utf-8");
+                } catch (UnsupportedEncodingException uee) {
+                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", requestBody, "utf-8");
+                    return null;
+                }
+            }
+
+        };
+
+        requestQueue.add(stringRequest);
     }
 
     public void createRoom(View view) throws JSONException {
@@ -170,6 +250,8 @@ public class SearchActivity extends AppCompatActivity {
     public void createRoomConnection(String url, final String requestBody){
 
         final Intent intent = new Intent(this, ChatActivity.class);
+        intent.putExtra("username", username);
+        intent.putExtra("roomname", roomname.getText().toString());
 
         stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
@@ -177,6 +259,11 @@ public class SearchActivity extends AppCompatActivity {
                 Log.i("Resposta de create room", response);
                 if (response.equals("true")){
                     startActivity(intent);
+                    try {
+                        addUsers();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     Toast toast = Toast.makeText(getApplicationContext(), "This chat name is already in use. Please, choose another one.", Toast.LENGTH_LONG);
                     Log.i("JSON", requestBody);
