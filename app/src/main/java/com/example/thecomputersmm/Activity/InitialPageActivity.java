@@ -27,6 +27,7 @@ import com.example.thecomputersmm.Adapter.ChatListAdapter;
 import com.example.thecomputersmm.Command.MessageCommand;
 import com.example.thecomputersmm.Command.RoomCommand;
 import com.example.thecomputersmm.R;
+import com.example.thecomputersmm.Url;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -101,7 +102,7 @@ public class InitialPageActivity extends AppCompatActivity {
         jsonObject.put("username", username);
 
         String requestBody = jsonObject.toString();
-        String url = "http://192.168.1.6:8080/getUserRooms";
+        String url = Url.getUserRooms;
 
         loadRoomsConnection(url, requestBody);
     }
@@ -112,7 +113,7 @@ public class InitialPageActivity extends AppCompatActivity {
         jsonObject.put("name", room.getName());
 
         String requestBody = jsonObject.toString();
-        String url = "http://192.168.1.6:8080/getLastMessage";
+        String url = Url.getLastMessage;
 
         loadLastMessageConnection(url, requestBody, room);
     }
@@ -246,7 +247,7 @@ public class InitialPageActivity extends AppCompatActivity {
     }
 
     public void logout (MenuItem item){
-        String url = "http://192.168.1.6:8080/logout";
+        String url = Url.logout;
 
         final Intent intent = new Intent(this, LoginActivity.class);
 

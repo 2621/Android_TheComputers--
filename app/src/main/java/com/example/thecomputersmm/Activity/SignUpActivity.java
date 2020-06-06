@@ -19,6 +19,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.thecomputersmm.Activity.InitialPageActivity;
 import com.example.thecomputersmm.R;
+import com.example.thecomputersmm.Url;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -76,7 +77,7 @@ public class SignUpActivity extends AppCompatActivity {
             jsonBody.put("retype", confPasswordString);
             String requestBody = jsonBody.toString();
 
-            String url = "http://192.168.1.6:8080/newUser";
+            String url = Url.newUser;
 
             signUp(url, requestBody);
         }

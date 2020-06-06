@@ -19,6 +19,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.thecomputersmm.Command.ChatListCommand;
 import com.example.thecomputersmm.R;
+import com.example.thecomputersmm.Url;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
         jsonBody.put("password", passwordString);
         String requestBody = jsonBody.toString();
 
-        String url = "http://192.168.1.6:8080/login";
+        String url = Url.login;
 
         loginConnection(url, requestBody);
 

@@ -32,6 +32,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.thecomputersmm.Adapter.UserListAdapter;
 import com.example.thecomputersmm.R;
 import com.example.thecomputersmm.Command.UserCommand;
+import com.example.thecomputersmm.Url;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -39,6 +40,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,8 +67,6 @@ public class SearchActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         username = extras.getString("username");
 
-        roomname = (EditText) findViewById(R.id.roomname);
-
         listViewUser = (ListView) findViewById(R.id.listViewUser);
 
         requestQueue = Volley.newRequestQueue(this);
@@ -85,7 +85,7 @@ public class SearchActivity extends AppCompatActivity {
         jsonObject.put("username", username);
 
         String requestBody = jsonObject.toString();
-        String url = "http://192.168.1.6:8080/getUsers";
+        String url = Url.getUsers;
 
         loadUsersConnection(url, requestBody);
     }
@@ -148,20 +148,21 @@ public class SearchActivity extends AppCompatActivity {
         cp.showAtLocation(view, Gravity.CENTER, 0, 0);
         cp.update(0, 0, 900, 520);
 
+        roomname = (EditText) pview.findViewById(R.id.roomname);
     }
 
     public void createRoom(View view) throws JSONException {
 
-        //aqui está com problema, roomName está nulo
         String roomNameString = roomname.getText().toString();
 
-//        Log.i("valor do roomName", roomNameString);
+     //Resolvido, mas dá para ver que consegue pegar o nome do chat aqui:
+     //   Log.i("valor do roomName", roomNameString);
 
         JSONObject jsonBody = new JSONObject();
         jsonBody.put("roomName", roomNameString);
         String requestBody = jsonBody.toString();
 
-        String url = "http://192.168.1.6:8080/createRoom";
+        String url = Url.createRoom;
 
         createRoomConnection(url, requestBody);
     }
@@ -223,7 +224,7 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void logout (MenuItem item){
-        String url = "http://192.168.1.6:8080/logout";
+        String url = Url.logout;
 
         final Intent intent = new Intent(this, LoginActivity.class);
 
