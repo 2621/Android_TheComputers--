@@ -72,8 +72,8 @@ public class ChangePasswordActivity<Authentication> extends AppCompatActivity {
         if(validacaoSenha(passwordString, confPasswordString)){
 
             JSONObject jsonBody = new JSONObject();
+            jsonBody.put("username", username);
             jsonBody.put("password", passwordString);
-            jsonBody.put("retype", confPasswordString);
             String requestBody = jsonBody.toString();
 
             String url = Url.updateUserPassword;
