@@ -34,6 +34,7 @@ public class ChangePasswordActivity<Authentication> extends AppCompatActivity {
 
     EditText password;
     EditText confPassword;
+    String username;
 
     StringRequest stringRequest;
     RequestQueue requestQueue;
@@ -43,11 +44,14 @@ public class ChangePasswordActivity<Authentication> extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change__password);
+        Bundle extras = getIntent().getExtras();
+        username = extras.getString("username");
 
         password = (EditText) findViewById(R.id.textpass2);
         confPassword = (EditText) findViewById(R.id.textpass);
 
         requestQueue = Volley.newRequestQueue(this);
+
     }
 
     private boolean validacaoSenha(String password, String confPassword){
@@ -96,6 +100,7 @@ public class ChangePasswordActivity<Authentication> extends AppCompatActivity {
                         public void run(){
                             try{
                                 Thread.sleep(2500);
+                                intent.putExtra("username", username);
                                 startActivity(intent);
                             } catch (Exception e){
                                 e.printStackTrace();

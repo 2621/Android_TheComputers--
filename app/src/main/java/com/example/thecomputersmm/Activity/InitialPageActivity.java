@@ -243,6 +243,7 @@ public class InitialPageActivity extends AppCompatActivity {
 
     public void openChangePassword (MenuItem item){
         Intent intent = new Intent(this, ChangePasswordActivity.class);
+        intent.putExtra("username", username);
         startActivity(intent);
     }
 

@@ -307,6 +307,7 @@ public class SearchActivity extends AppCompatActivity {
 
     public void openChangePassword (MenuItem item){
         Intent intent = new Intent(this, ChangePasswordActivity.class);
+        intent.putExtra("username", username);
         startActivity(intent);
     }
 
