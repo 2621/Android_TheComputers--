@@ -14,6 +14,7 @@ public class Url {
     static public String getLastMessage = base + "getLastMessage";
     static public String addUserToRoom = base + "addUserToRoom";
     static public String updateUserPassword = base + "updateUserPassword";
+    static public String deleteUser = base + "removeUser";
 
 
 }
