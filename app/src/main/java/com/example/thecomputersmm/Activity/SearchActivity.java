@@ -130,7 +130,7 @@ public class SearchActivity extends AppCompatActivity {
         List<UserCommand> userList = gson.fromJson(jsonString, type);
 
         for (UserCommand user : userList){
-            users.add(new UserCommand(user.username));
+            users.add(new UserCommand(user.getUsername()));
         }
 
         adapter = new UserListAdapter(this, R.layout.item_user_list,users);

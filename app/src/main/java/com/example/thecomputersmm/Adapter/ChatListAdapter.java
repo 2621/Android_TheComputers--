@@ -35,12 +35,9 @@ public class ChatListAdapter extends ArrayAdapter<ChatListCommand> {
         TextView nameText = (TextView) rowView.findViewById(R.id.chatName);
         TextView textText = (TextView) rowView.findViewById(R.id.chatText);
 
-
-        nameText.setText(chats.get(position).roomName);
-        textText.setText(chats.get(position).lastMessage);
-
+        nameText.setText(chats.get(position).getRoomName());
+        textText.setText(chats.get(position).getLastMessage());
 
         return rowView;
-
     };
 }

@@ -14,37 +14,13 @@ public class MessageCommand {
         this.roomId = roomId;
     }
 
-    public MessageCommand () {}
+    public String getContent() { return content; }
 
-    public String getContent() {
-        return content;
-    }
+    public String getUsername() { return username; }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    public Integer getUserId() { return userId; }
 
     public Integer getRoomId() {
         return roomId;
-    }
-
-    public void setRoomId(Integer roomId) {
-        this.roomId = roomId;
     }
 }

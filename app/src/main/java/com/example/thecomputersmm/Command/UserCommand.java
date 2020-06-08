@@ -1,13 +1,13 @@
 package com.example.thecomputersmm.Command;
 
 public class UserCommand {
-    public String username;
+    private String username;
 
     public UserCommand(String name) {
         this.username = name;
     }
 
-    public String get(){
+    public String getUsername(){
         return username;
     }
 

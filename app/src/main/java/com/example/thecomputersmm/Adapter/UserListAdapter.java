@@ -8,8 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import com.example.thecomputersmm.R;
 import com.example.thecomputersmm.Command.UserCommand;
@@ -40,9 +38,9 @@ public class UserListAdapter extends ArrayAdapter<UserCommand> {
 
         final CheckBox usernameText = (CheckBox) rowView.findViewById(R.id.nameUser);
 
-        usernameText.setText(users.get(position).username);
+        usernameText.setText(users.get(position).getUsername());
 
-        //ver se é CompoundButton mesmo ou RaadioGrouṕ
+        //ver se é CompoundButton mesmo ou RadioGrouṕ
         usernameText.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
 
             @Override

@@ -18,14 +18,6 @@ public class MessageListAdapter extends ArrayAdapter<MessageCommand> {
 
     private final ArrayList<MessageCommand> messages;
 
-//    public Message_listAdapter(Activity context, int layoutItem, ArrayList<Message_list> messages) {
-//        super(context, layoutItem, messages);
-//        // TODO Auto-generated constructor stub
-//
-//        this.context=context;
-//        this.messages = messages;
-//
-//    }
     public MessageListAdapter(Activity context, ArrayList<MessageCommand> messages, String username) {
         super(context, 0, messages);
         // TODO Auto-generated constructor stub
@@ -35,21 +27,6 @@ public class MessageListAdapter extends ArrayAdapter<MessageCommand> {
 
     }
 
-//    public View getView(int position, View view, ViewGroup parent) {
-//
-//        LayoutInflater inflater=context.getLayoutInflater();
-//
-//        View rowView=inflater.inflate(R.layout.item_messageUser_list, null,true);
-//
-//        TextView messageText = (TextView) rowView.findViewById(R.id.message);
-//
-//        messageText.setText(messages.get(position).message);
-//
-//
-//
-//        return rowView;
-//
-//    };
     public View getView(int position, View view, ViewGroup parent) {
 
         LayoutInflater inflater= context.getLayoutInflater();

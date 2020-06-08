@@ -91,7 +91,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void loadMessagesConnection(String url, final JSONObject requestBody) {
-        //o retorno de getUsers é um JSONArray, e o body é um JsonObject
+        //o retorno de getMessages é um JSONArray, e o body é um JsonObject
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
                 (Request.Method.POST, url, null, new Response.Listener<JSONArray>() {
                     @Override
