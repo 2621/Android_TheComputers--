@@ -1,7 +1,7 @@
 package com.example.thecomputersmm;
 
 public class Url {
-    static public String base = "http://192.168.15.10:8080/";
+    static public String base = "http://192.168.0.16:8080/";
     //Sarah:"http://192.168.1.6:8080/"
     //Milena: "http://192.168.15.10:8080/"
 
@@ -15,6 +15,7 @@ public class Url {
     static public String addUserToRoom = base + "addUserToRoom";
     static public String updateUserPassword = base + "updateUserPassword";
     static public String deleteUser = base + "removeUser";
+    static public String getMessages = base + "getMessages";
 
 
 }

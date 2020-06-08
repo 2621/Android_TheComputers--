@@ -11,18 +11,35 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.thecomputersmm.Adapter.MessageListAdapter;
 import com.example.thecomputersmm.Command.MessageCommand;
+import com.example.thecomputersmm.Command.RoomCommand;
 import com.example.thecomputersmm.R;
+import com.example.thecomputersmm.Url;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ChatActivity extends AppCompatActivity {
 
     private TextView textViewName;
     private EditText editMessage;
     private TextView editRoomname;
-
     private ListView listViewMessage;
 
     private ArrayList<MessageCommand> messages = new ArrayList<>();
@@ -32,11 +49,16 @@ public class ChatActivity extends AppCompatActivity {
     private String roomname;
     private Integer roomId;
 
+    JsonArrayRequest jsonArrayRequest;
+    RequestQueue requestQueue;
+
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
+        requestQueue = Volley.newRequestQueue(this);
 
         Bundle extras = getIntent().getExtras();
         username = extras.getString("username");
@@ -52,14 +74,60 @@ public class ChatActivity extends AppCompatActivity {
         listViewMessage.setDivider(null);
         listViewMessage.setDividerHeight(0);
 
-
-//        messages.add(new Message2Command("me", "Olha essa nova mensagem"));
-//        messages.add(new Message2Command("Amigo", "Responded"));
+        try{
+            loadMessages();
+        }
+        catch(JSONException e){
+            e.printStackTrace();
+        }
 
         adapter = new MessageListAdapter(this, messages, username);
-
-
         listViewMessage.setAdapter(adapter);
+    }
+
+    public void loadMessages() throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", roomId);
+        jsonObject.put("name", roomname);
+        //RoomCommand roomCommand = new RoomCommand(roomId, roomname);
+        //String requestBody = jsonObject.toString();
+        String url = Url.getMessages;
+        loadMessagesConnection(url, jsonObject);
+    }
+
+    public void loadMessagesConnection(String url, final JSONObject requestBody) {
+        //o retorno de getUsers é um JSONArray, e o body é um JsonObject
+        jsonArrayRequest = new JsonArrayRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        Log.i("resposta onResponse", response.toString());
+                        parseJSONMessages(response.toString());
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.i("requestBody", requestBody.toString());
+                        Log.e("volleyError",error.toString());
+                    }
+                }){
+            @Override
+            public byte[] getBody(){
+                try {
+                    return requestBody.toString().getBytes("utf-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+        };
+        requestQueue.add(jsonArrayRequest);
+    }
+
+    public void parseJSONMessages(String jsonMessages){
+        Gson gson = new Gson();
+        Type type = new TypeToken<List<MessageCommand>>(){}.getType();
+        messages = gson.fromJson(jsonMessages, type);
     }
 
     public void send(View view){
