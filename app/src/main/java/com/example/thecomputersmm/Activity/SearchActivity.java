@@ -54,6 +54,8 @@ public class SearchActivity extends AppCompatActivity {
     ArrayList<UserCommand> users;
     UserListAdapter adapter;
     long[] checkedItems;
+    ArrayList<String> selectedUsers;
+    UserCommand user;
 
     StringRequest stringRequest;
     JsonArrayRequest jsonArrayRequest;
@@ -140,54 +142,60 @@ public class SearchActivity extends AppCompatActivity {
 
     public void roomName(View view) throws JSONException {
 
-        listViewUser.getCheckedItemPositions();
+        selectedUsers = adapter.getSelectedUsers();
 
-        checkedItems = listViewUser.getCheckedItemIds();
-        int checkedItemsCount = listViewUser.getCheckedItemCount();
+//        listViewUser.getCheckedItemPositions();
+//
+//        checkedItems = listViewUser.getCheckedItemIds();
+//        int checkedItemsCount = listViewUser.getCheckedItemCount();
 
-        LayoutInflater inflater = (LayoutInflater) SearchActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
 
-        View pview;
-        pview = inflater.inflate(R.layout.name_group_popup, null);
+        //Resolvido, mas é possível checar os usuários selecionados:
+//        for (String checkedItem2: selectedUsers) {
+//            Log.i("username", checkedItem2);
+//        }
 
-        PopupWindow cp = new PopupWindow(pview, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        cp.setFocusable(true);
-        cp.showAtLocation(view, Gravity.CENTER, 0, 0);
-        cp.update(0, 0, 900, 520);
-
-        roomname = (EditText) pview.findViewById(R.id.roomname);
 
 //        if(checkedItemsCount == 0){
-//            Toast toast = Toast.makeText(getApplicationContext(), "Please select users to your chat", Toast.LENGTH_LONG);
-//            toast.show();
-//        }
-//        else{
-//            LayoutInflater inflater = (LayoutInflater) SearchActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
-//
-//            View pview;
-//            pview = inflater.inflate(R.layout.name_group_popup, null);
-//
-//            PopupWindow cp = new PopupWindow(pview, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-//            cp.setFocusable(true);
-//            cp.showAtLocation(view, Gravity.CENTER, 0, 0);
-//            cp.update(0, 0, 900, 520);
-//
-//            roomname = (EditText) pview.findViewById(R.id.roomname);
-//        }
+          if(selectedUsers.isEmpty()){
+            Toast toast = Toast.makeText(getApplicationContext(), "Please select users to your chat", Toast.LENGTH_LONG);
+            toast.show();
+        }
+        else{
+            LayoutInflater inflater = (LayoutInflater) SearchActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
+
+            View pview;
+            pview = inflater.inflate(R.layout.name_group_popup, null);
+
+            PopupWindow cp = new PopupWindow(pview, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            cp.setFocusable(true);
+            cp.showAtLocation(view, Gravity.CENTER, 0, 0);
+            cp.update(0, 0, 900, 520);
+
+            roomname = (EditText) pview.findViewById(R.id.roomname);
+        }
     }
 
     public void addUsers() throws JSONException {
-        for (long checkedItem: checkedItems) {
-                addUserToRoom(users.get((int)checkedItem));
+//        for (long checkedItem: checkedItems) {
+//                addUserToRoom(users.get((int)checkedItem));
+//        }
+
+        for (String checkedItem: selectedUsers) {
+            //user.username = checkedItem;
+            addUserToRoom(checkedItem);
         }
+
 
 //        addUserToRoom(new UserCommand("user4"));
 //        addUserToRoom(new UserCommand("user5"));
     }
 
-    public void addUserToRoom(UserCommand user) throws JSONException {
+//    public void addUserToRoom(UserCommand user) throws JSONException {
+      public void addUserToRoom(String user) throws JSONException {
         JSONObject jsonBody = new JSONObject();
-        jsonBody.put("username", user.username);
+//        jsonBody.put("username", user.username);
+        jsonBody.put("username", user);
         jsonBody.put("roomName", roomname.getText().toString());
         String requestBody = jsonBody.toString();
 
@@ -196,13 +204,13 @@ public class SearchActivity extends AppCompatActivity {
         addUserToRoomConnection(url, requestBody, user);
     }
 
-    public void addUserToRoomConnection(String url, final String requestBody, final UserCommand user){
+    public void addUserToRoomConnection(String url, final String requestBody, final String user){
         stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.i("Resposta de create room", response);
                 if (response.equals("false")){
-                    Toast toast = Toast.makeText(getApplicationContext(), user.username+ "cannot added to this chat", Toast.LENGTH_LONG);
+                    Toast toast = Toast.makeText(getApplicationContext(), user + "cannot added to this chat", Toast.LENGTH_LONG);
                     toast.show();
                 }
             }

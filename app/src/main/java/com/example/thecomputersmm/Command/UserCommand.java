@@ -6,4 +6,9 @@ public class UserCommand {
     public UserCommand(String name) {
         this.username = name;
     }
+
+    public String get(){
+        return username;
+    }
+
 }
