@@ -17,7 +17,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.thecomputersmm.Command.ChatListCommand;
+
 import com.example.thecomputersmm.R;
 import com.example.thecomputersmm.Url;
 
@@ -48,30 +48,20 @@ public class LoginActivity extends AppCompatActivity {
 
     public void openSignUpScreen (View view){
 
-        //para chamar a tela de cadastro e passar os parâmetros de username e password
         Intent intent = new Intent(this, SignUpActivity.class);
-
         startActivity(intent);
     }
 
     public void login(View view) throws JSONException {
-        String usernameString = username.getText().toString();
-        String passwordString = password.getText().toString();
 
-        //pra testar sem acesso ao bd
-//        Intent intent = new Intent(this, InitialPage.class);
-//        startActivity(intent);
-
-        //comentar daqui pra baixo pra acessar sem bd
         JSONObject jsonBody = new JSONObject();
-        jsonBody.put("username", usernameString);
-        jsonBody.put("password", passwordString);
+        jsonBody.put("username", username.getText().toString());
+        jsonBody.put("password", password.getText().toString());
         String requestBody = jsonBody.toString();
 
         String url = Url.login;
 
         loginConnection(url, requestBody);
-
     }
 
     public void loginConnection(String url, final String requestBody){
@@ -96,7 +86,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("ERROR", error.toString());
-
             }
         }) {
             @Override
@@ -113,13 +102,7 @@ public class LoginActivity extends AppCompatActivity {
                     return null;
                 }
             }
-
         };
-
         requestQueue.add(stringRequest);
-
     }
-
-
-
 }

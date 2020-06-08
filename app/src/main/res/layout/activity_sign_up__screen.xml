@@ -107,7 +107,7 @@
         android:layout_marginTop="44dp"
         android:layout_marginBottom="50dp"
         android:background="@drawable/custom_rounded_corners"
-        android:onClick="login"
+        android:onClick="signUp"
         android:text="Sign Up"
         android:textColor="#FBFBFB"
         android:textSize="22sp"

@@ -17,7 +17,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.thecomputersmm.Activity.InitialPageActivity;
+
 import com.example.thecomputersmm.R;
 import com.example.thecomputersmm.Url;
 
@@ -58,19 +58,13 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
 
-    public void openInitialPage (View view) throws JSONException {
+    public void signUp(View view) throws JSONException {
 
         String usernameString = username.getText().toString();
         String passwordString = password.getText().toString();
         String confPasswordString = confPassword.getText().toString();
 
         if(validacaoSenha(passwordString, confPasswordString)){
-
-            //descomentar sem quiser usar sem acesso ao bd
-//            Intent intent = new Intent(this, InitialPage.class);
-//            startActivity(intent);
-
-            //comentar daqui pra baixo se quiser acessar sem o bd
             JSONObject jsonBody = new JSONObject();
             jsonBody.put("username", usernameString);
             jsonBody.put("password", passwordString);
@@ -79,14 +73,11 @@ public class SignUpActivity extends AppCompatActivity {
 
             String url = Url.newUser;
 
-            signUp(url, requestBody);
+            signUpConnection(url, requestBody);
         }
-
-
-
     }
 
-    private void signUp(String url, final String requestBody) {
+    private void signUpConnection(String url, final String requestBody) {
 
         final Intent intent = new Intent(this, InitialPageActivity.class);
 
@@ -125,9 +116,7 @@ public class SignUpActivity extends AppCompatActivity {
                     return null;
                 }
             }
-
         };
-
         requestQueue.add(stringRequest);
     }
 }

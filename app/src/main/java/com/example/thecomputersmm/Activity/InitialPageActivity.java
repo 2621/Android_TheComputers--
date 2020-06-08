@@ -87,9 +87,7 @@ public class InitialPageActivity extends AppCompatActivity {
                 intent.putExtra("username", username);
                 startActivity(intent);
             }
-
         });
-
     }
 
     public void openSearch (View view){
@@ -101,22 +99,11 @@ public class InitialPageActivity extends AppCompatActivity {
     public void loadRooms() throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("username", username);
-
         String requestBody = jsonObject.toString();
+
         String url = Url.getUserRooms;
 
         loadRoomsConnection(url, requestBody);
-    }
-
-    public void loadLastMessage(RoomCommand room) throws JSONException {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("id", room.getId());
-        jsonObject.put("name", room.getName());
-
-        String requestBody = jsonObject.toString();
-        String url = Url.getLastMessage;
-
-        loadLastMessageConnection(url, requestBody, room);
     }
 
     public void loadRoomsConnection(String url, final String requestBody) throws JSONException{
@@ -156,6 +143,31 @@ public class InitialPageActivity extends AppCompatActivity {
         requestQueue.add(jsonArrayRequest);
     }
 
+    private void parseJSONRoom(String jsonString) throws JSONException, InterruptedException {
+        Gson gson = new Gson();
+        Type type = new TypeToken<List<RoomCommand>>(){}.getType();
+        roomList = gson.fromJson(jsonString, type);
+
+        roomListSize = roomList.size();
+        Log.i("roomListSize", Integer.toString(roomListSize));
+        contador = 0;
+        for (RoomCommand room : roomList){
+            contador++;
+            loadLastMessage(room);
+        }
+    }
+
+    public void loadLastMessage(RoomCommand room) throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", room.getId());
+        jsonObject.put("name", room.getName());
+
+        String requestBody = jsonObject.toString();
+        String url = Url.getLastMessage;
+
+        loadLastMessageConnection(url, requestBody, room);
+    }
+
     public void loadLastMessageConnection(String url, final String requestBody, final RoomCommand room) {
 
         //o retorno de getUsers é um JSONObject, e o body é um JsonObject
@@ -189,20 +201,6 @@ public class InitialPageActivity extends AppCompatActivity {
         requestQueue.add(jsonObjectRequest);
     }
 
-    private void parseJSONRoom(String jsonString) throws JSONException, InterruptedException {
-        Gson gson = new Gson();
-        Type type = new TypeToken<List<RoomCommand>>(){}.getType();
-        roomList = gson.fromJson(jsonString, type);
-
-        roomListSize = roomList.size();
-        Log.i("roomListSize", Integer.toString(roomListSize));
-        contador = 0;
-        for (RoomCommand room : roomList){
-            contador++;
-            loadLastMessage(room);
-        }
-    }
-
     private void parseJSONLastMessage(String jsonString, RoomCommand room) {
 
         Gson gson = new Gson();
@@ -216,31 +214,12 @@ public class InitialPageActivity extends AppCompatActivity {
         }
     }
 
-//    public View getView(View view) {
-//
-//        LayoutInflater inflater=this.getLayoutInflater();
-//
-//        View rowView=inflater.inflate(R.layout.item_chat_list, null,true);
-//
-//        TextView nameText = (TextView) rowView.findViewById(R.id.chatName);
-//        TextView textText = (TextView) rowView.findViewById(R.id.chatText);
-//
-////        nameText.setText(room.getName());
-////        textText.setText(lastMessage.getContent());
-//
-//
-//        return rowView;
-//
-//    };
-
-
     public void showMenu(View v) {
         PopupMenu popup = new PopupMenu(this, v);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.options, popup.getMenu());
         popup.show();
     }
-
 
     public void openChangePassword (MenuItem item){
         Intent intent = new Intent(this, ChangePasswordActivity.class);
@@ -269,10 +248,8 @@ public class InitialPageActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("ERROR", error.toString());
-
             }
         });
-
         requestQueue.add(stringRequest);
     }
 

@@ -8,7 +8,6 @@ import java.lang.reflect.Type;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -30,10 +29,12 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+
 import com.example.thecomputersmm.Adapter.UserListAdapter;
 import com.example.thecomputersmm.R;
 import com.example.thecomputersmm.Command.UserCommand;
 import com.example.thecomputersmm.Url;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -41,10 +42,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -53,9 +52,7 @@ public class SearchActivity extends AppCompatActivity {
 
     ArrayList<UserCommand> users;
     UserListAdapter adapter;
-    long[] checkedItems;
     ArrayList<String> selectedUsers;
-    UserCommand user;
 
     StringRequest stringRequest;
     JsonArrayRequest jsonArrayRequest;
@@ -80,8 +77,6 @@ public class SearchActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-//        roomName = (EditText) findViewById(R.id.roomName);
     }
 
     public void loadUsers() throws JSONException{
@@ -129,13 +124,15 @@ public class SearchActivity extends AppCompatActivity {
 
     private void parseJSON(String jsonString) {
         users = new ArrayList<UserCommand>();
+
         Gson gson = new Gson();
         Type type = new TypeToken<List<UserCommand>>(){}.getType();
         List<UserCommand> userList = gson.fromJson(jsonString, type);
+
         for (UserCommand user : userList){
             users.add(new UserCommand(user.username));
         }
-        //carregar na listView os usuários
+
         adapter = new UserListAdapter(this, R.layout.item_user_list,users);
         listViewUser.setAdapter(adapter);
     }
@@ -144,20 +141,7 @@ public class SearchActivity extends AppCompatActivity {
 
         selectedUsers = adapter.getSelectedUsers();
 
-//        listViewUser.getCheckedItemPositions();
-//
-//        checkedItems = listViewUser.getCheckedItemIds();
-//        int checkedItemsCount = listViewUser.getCheckedItemCount();
-
-
-        //Resolvido, mas é possível checar os usuários selecionados:
-//        for (String checkedItem2: selectedUsers) {
-//            Log.i("username", checkedItem2);
-//        }
-
-
-//        if(checkedItemsCount == 0){
-          if(selectedUsers.isEmpty()){
+        if(selectedUsers.isEmpty()){
             Toast toast = Toast.makeText(getApplicationContext(), "Please select users to your chat", Toast.LENGTH_LONG);
             toast.show();
         }
@@ -177,40 +161,29 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void addUsers() throws JSONException {
-//        for (long checkedItem: checkedItems) {
-//                addUserToRoom(users.get((int)checkedItem));
-//        }
-
         for (String checkedItem: selectedUsers) {
-            //user.username = checkedItem;
             addUserToRoom(checkedItem);
         }
-
-
-//        addUserToRoom(new UserCommand("user4"));
-//        addUserToRoom(new UserCommand("user5"));
     }
 
-//    public void addUserToRoom(UserCommand user) throws JSONException {
-      public void addUserToRoom(String user) throws JSONException {
+    public void addUserToRoom(String username) throws JSONException {
         JSONObject jsonBody = new JSONObject();
-//        jsonBody.put("username", user.username);
-        jsonBody.put("username", user);
+        jsonBody.put("username", username);
         jsonBody.put("roomName", roomname.getText().toString());
-        String requestBody = jsonBody.toString();
 
+        String requestBody = jsonBody.toString();
         String url = Url.addUserToRoom;
 
-        addUserToRoomConnection(url, requestBody, user);
+        addUserToRoomConnection(url, requestBody, username);
     }
 
-    public void addUserToRoomConnection(String url, final String requestBody, final String user){
+    public void addUserToRoomConnection(String url, final String requestBody, final String username){
         stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.i("Resposta de create room", response);
                 if (response.equals("false")){
-                    Toast toast = Toast.makeText(getApplicationContext(), user + "cannot added to this chat", Toast.LENGTH_LONG);
+                    Toast toast = Toast.makeText(getApplicationContext(), username + "cannot added to this chat", Toast.LENGTH_LONG);
                     toast.show();
                 }
             }
@@ -233,23 +206,15 @@ public class SearchActivity extends AppCompatActivity {
                     return null;
                 }
             }
-
         };
-
         requestQueue.add(stringRequest);
     }
 
     public void createRoom(View view) throws JSONException {
-
-        String roomNameString = roomname.getText().toString();
-
-     //Resolvido, mas dá para ver que consegue pegar o nome do chat aqui:
-     //   Log.i("valor do roomName", roomNameString);
-
         JSONObject jsonBody = new JSONObject();
-        jsonBody.put("roomName", roomNameString);
-        String requestBody = jsonBody.toString();
+        jsonBody.put("roomName", roomname.getText().toString());
 
+        String requestBody = jsonBody.toString();
         String url = Url.createRoom;
 
         createRoomConnection(url, requestBody);
@@ -282,7 +247,6 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("ERROR", error.toString());
-
             }
         }) {
             @Override
@@ -299,9 +263,7 @@ public class SearchActivity extends AppCompatActivity {
                     return null;
                 }
             }
-
         };
-
         requestQueue.add(stringRequest);
     }
 
@@ -345,7 +307,6 @@ public class SearchActivity extends AppCompatActivity {
         });
 
         requestQueue.add(stringRequest);
-
     }
 
     public void deleteAccount (MenuItem item) throws JSONException {
@@ -396,9 +357,7 @@ public class SearchActivity extends AppCompatActivity {
                     return null;
                 }
             }
-
         };
-
         requestQueue.add(stringRequest);
     }
 }

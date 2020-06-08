@@ -2,7 +2,6 @@ package com.example.thecomputersmm.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,7 +17,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.thecomputersmm.Activity.InitialPageActivity;
 import com.example.thecomputersmm.R;
 import com.example.thecomputersmm.Url;
 
@@ -26,9 +24,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.security.AccessController;
-
-//pegar o usuário que esta cadastrado
 
 public class ChangePasswordActivity<Authentication> extends AppCompatActivity {
 
@@ -44,6 +39,7 @@ public class ChangePasswordActivity<Authentication> extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change__password);
+
         Bundle extras = getIntent().getExtras();
         username = extras.getString("username");
 
@@ -51,7 +47,6 @@ public class ChangePasswordActivity<Authentication> extends AppCompatActivity {
         confPassword = (EditText) findViewById(R.id.textpass);
 
         requestQueue = Volley.newRequestQueue(this);
-
     }
 
     private boolean validacaoSenha(String password, String confPassword){
@@ -65,7 +60,7 @@ public class ChangePasswordActivity<Authentication> extends AppCompatActivity {
         }
     }
 
-    public void confirmNewPassword (View view) throws JSONException {
+    public void changePassword(View view) throws JSONException {
         String passwordString = password.getText().toString();
         String confPasswordString = confPassword.getText().toString();
 
@@ -74,16 +69,16 @@ public class ChangePasswordActivity<Authentication> extends AppCompatActivity {
             JSONObject jsonBody = new JSONObject();
             jsonBody.put("username", username);
             jsonBody.put("password", passwordString);
-            String requestBody = jsonBody.toString();
 
+            String requestBody = jsonBody.toString();
             String url = Url.updateUserPassword;
 
-            newPassword(url, requestBody);
+            changePasswordConnection(url, requestBody);
         }
 
     }
 
-    private void newPassword(String url, final String requestBody){
+    private void changePasswordConnection(String url, final String requestBody){
         final Intent intent = new Intent(this, InitialPageActivity.class);
 
         stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
@@ -134,9 +129,7 @@ public class ChangePasswordActivity<Authentication> extends AppCompatActivity {
                     return null;
                 }
             }
-
         };
-
         requestQueue.add(stringRequest);
     }
 }
