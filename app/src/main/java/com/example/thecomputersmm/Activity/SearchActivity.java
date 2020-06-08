@@ -348,10 +348,57 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
-    public void deleteAccount (MenuItem item){
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
+    public void deleteAccount (MenuItem item) throws JSONException {
+        JSONObject jsonBody = new JSONObject();
+        jsonBody.put("username", username);
+        String requestBody = jsonBody.toString();
 
-        //COLOCAR AQUI A LÓGICA DO BANCO DE DADOS PARA DELETAR A CONTA (JÁ EFETUA O LOGOUT TAMBÉM
+        String url = Url.deleteUser;
+        deleteAccountConnection(url, requestBody);
+    }
+
+    public void deleteAccountConnection(String url, final String requestBody){
+        final Intent intent = new Intent(this, LoginActivity.class);
+
+        stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.i("Resposta de deletar", response);
+                if (response.equals("true")) {
+                    Log.i("delete response", response);
+                    Toast toast = Toast.makeText(getApplicationContext(), "Account deleted", Toast.LENGTH_LONG);
+                    toast.show();
+                    startActivity(intent);
+                } else {
+                    Toast toast = Toast.makeText(getApplicationContext(), "Couldn't delete account", Toast.LENGTH_LONG);
+                    Log.i("JSON", requestBody);
+                    toast.show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("ERROR", error.toString());
+
+            }
+        }) {
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                try {
+                    return requestBody == null ? null : requestBody.getBytes("utf-8");
+                } catch (UnsupportedEncodingException uee) {
+                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", requestBody, "utf-8");
+                    return null;
+                }
+            }
+
+        };
+
+        requestQueue.add(stringRequest);
     }
 }
