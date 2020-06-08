@@ -49,7 +49,6 @@ public class ChatActivity extends AppCompatActivity {
     private String roomname;
     private Integer roomId;
 
-    JsonArrayRequest jsonArrayRequest;
     RequestQueue requestQueue;
 
     @SuppressLint("WrongViewCast")
@@ -81,24 +80,20 @@ public class ChatActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        adapter = new MessageListAdapter(this, messages, username);
-        listViewMessage.setAdapter(adapter);
     }
 
-    public void loadMessages() throws JSONException {
+    private void loadMessages() throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", roomId);
         jsonObject.put("name", roomname);
-        //RoomCommand roomCommand = new RoomCommand(roomId, roomname);
-        //String requestBody = jsonObject.toString();
         String url = Url.getMessages;
         loadMessagesConnection(url, jsonObject);
     }
 
-    public void loadMessagesConnection(String url, final JSONObject requestBody) {
+    private void loadMessagesConnection(String url, final JSONObject requestBody) {
         //o retorno de getUsers é um JSONArray, e o body é um JsonObject
-        jsonArrayRequest = new JsonArrayRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
+                (Request.Method.POST, url, null, new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
                         Log.i("resposta onResponse", response.toString());
@@ -128,6 +123,9 @@ public class ChatActivity extends AppCompatActivity {
         Gson gson = new Gson();
         Type type = new TypeToken<List<MessageCommand>>(){}.getType();
         messages = gson.fromJson(jsonMessages, type);
+
+        adapter = new MessageListAdapter(this, messages, username);
+        listViewMessage.setAdapter(adapter);
     }
 
     public void send(View view){
