@@ -19,6 +19,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.thecomputersmm.Adapter.MessageListAdapter;
+import com.example.thecomputersmm.Command.ChatInfoCommand;
 import com.example.thecomputersmm.Command.MessageCommand;
 import com.example.thecomputersmm.Command.RoomCommand;
 import com.example.thecomputersmm.R;
@@ -29,11 +30,21 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import com.android.volley.toolbox.JsonObjectRequest;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.CompletableTransformer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import ua.naiksoftware.stomp.Stomp;
+import ua.naiksoftware.stomp.StompClient;
+
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -43,13 +54,21 @@ public class ChatActivity extends AppCompatActivity {
     private ListView listViewMessage;
 
     private ArrayList<MessageCommand> messages = new ArrayList<>();
+    private ChatInfoCommand chatInfo;
     private MessageListAdapter adapter;
 
     private String username;
-    private String roomname;
+    private String roomName;
     private Integer roomId;
+    private Integer userId;
 
     RequestQueue requestQueue;
+
+    private StompClient mStompClient;
+    private CompositeDisposable compositeDisposable;
+    JSONObject newJSONMessage;
+    String newMessageReceived;
+    String newMessageSend;
 
     @SuppressLint("WrongViewCast")
     @Override
@@ -57,15 +76,20 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
+        //conferir url do websockt, não entendi pq é /mywebsockets/websocket
+        String url = Url.webSocket;
+        mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, url);
+        chatInfoConnection();
+
         requestQueue = Volley.newRequestQueue(this);
 
         Bundle extras = getIntent().getExtras();
         username = extras.getString("username");
-        roomname = extras.getString("roomname");
+        roomName = extras.getString("roomname");
         roomId = extras.getInt("roomId");
 
         editRoomname =  (TextView) findViewById(R.id.textViewRoomName);
-        editRoomname.setText(roomname);
+        editRoomname.setText(roomName);
 
         editMessage = findViewById(R.id.editMessage);
 
@@ -82,10 +106,15 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
+    void updateListView() {
+        messages.add(new MessageCommand(newMessageReceived, username, userId, roomId));
+        adapter.notifyDataSetChanged();
+    }
+
     private void loadMessages() throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", roomId);
-        jsonObject.put("name", roomname);
+        jsonObject.put("name", roomName);
         String url = Url.getMessages;
         loadMessagesConnection(url, jsonObject);
     }
@@ -128,14 +157,114 @@ public class ChatActivity extends AppCompatActivity {
         listViewMessage.setAdapter(adapter);
     }
 
+    //pra conseguir o id do usuário, não foi testado
+    public void chatInfoConnection(){
+        String url = Url.chatInfo;
+
+        JsonObjectRequest request = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        parseJSONChatInfo(response.toString());
+                        subscribe();
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("LOG", error.toString());
+                    }
+                });
+        requestQueue.add(request);
+    }
+
+    public void parseJSONChatInfo(String jsonChatInfo){
+        Gson gson = new Gson();
+        Type type = new TypeToken<ChatInfoCommand>(){}.getType();
+        chatInfo = gson.fromJson(jsonChatInfo, type);
+
+        userId = chatInfo.getUserId();
+        Log.d("userID", Integer.toString((userId)));
+    }
+
+    private void subscribe() {
+        mStompClient.withClientHeartbeat(1000).withServerHeartbeat(1000);
+        resetSubscriptions();
+        Disposable dispLifecycle = mStompClient.lifecycle()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(lifecycleEvent -> {
+                    switch (lifecycleEvent.getType()) {
+                        case OPENED:
+                            break;
+                        case ERROR:
+                            Log.e("ChatActivity","Stomp connection error",lifecycleEvent.getException());
+                            break;
+                        case CLOSED:
+                            resetSubscriptions();
+                            break;
+                        case FAILED_SERVER_HEARTBEAT:
+                            Log.e("ChatActivity","Stomp hearthbeat fail",lifecycleEvent.getException());
+                            break;
+                    }
+                });
+
+        compositeDisposable.add(dispLifecycle);
+
+        Disposable dispTopic = mStompClient.topic("/topic/"+roomId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(topicMessage -> {
+                    newJSONMessage = new JSONObject(topicMessage.getPayload());
+                    try{
+                        newMessageReceived = newJSONMessage.getString("content");
+                        // linha onde podemos saber o remetente newJSONMessage.getInt("username")
+                        //tem que implementar esse updateListView();
+                        updateListView();
+                    }catch(JSONException e){
+                        e.printStackTrace();
+                    }
+                },throwable -> Log.d("fail","Error on subscribe topic",throwable));
+
+        compositeDisposable.add(dispTopic);
+
+        mStompClient.connect(null);
+    }
+
+    private void resetSubscriptions() {
+        if (compositeDisposable != null) {
+            compositeDisposable.dispose();
+        }
+        compositeDisposable = new CompositeDisposable();
+    }
+
+    protected CompletableTransformer applySchedulers() {
+        return upstream -> upstream
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
     public void send(View view){
-        Log.d("TAG", "SendMessage");
-
-        String message = editMessage.getText().toString();
-
-//        messages.add(new MessageCommand("me", message));
-        adapter.notifyDataSetChanged();
-
+        if (!mStompClient.isConnected()) return;
+        newMessageSend = editMessage.getText().toString();
         editMessage.setText("");
+
+        JSONObject temp  = new JSONObject();
+        try {
+            temp.put("userId",userId);
+            temp.put("roomId",roomId);
+            temp.put("username",username);
+            temp.put("content", newMessageSend);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        //Conferir esse destino, só peguei do projeto do gv, acho que pra gente é /messages
+        compositeDisposable.add(mStompClient.send("/app/message",String.valueOf(temp))
+                .compose(applySchedulers())
+                .subscribe(() -> Log.d("Chat Activity","STOMP echo send successfully"),
+                        throwable -> Log.e("Chat Activity","Error send STOMP ",throwable)));
+
     }
 }
+
