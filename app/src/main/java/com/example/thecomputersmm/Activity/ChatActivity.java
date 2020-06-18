@@ -9,14 +9,17 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.thecomputersmm.Adapter.MessageListAdapter;
 import com.example.thecomputersmm.Command.ChatInfoCommand;
@@ -31,6 +34,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import com.android.volley.toolbox.JsonObjectRequest;
+
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
@@ -63,6 +67,7 @@ public class ChatActivity extends AppCompatActivity {
     private Integer userId;
 
     RequestQueue requestQueue;
+    StringRequest stringRequest;
 
     private StompClient mStompClient;
     private CompositeDisposable compositeDisposable;
@@ -76,17 +81,25 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        //conferir url do websockt, não entendi pq é /mywebsockets/websocket
-        String url = Url.webSocket;
-        mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, url);
-        chatInfoConnection();
-
-        requestQueue = Volley.newRequestQueue(this);
-
         Bundle extras = getIntent().getExtras();
         username = extras.getString("username");
         roomName = extras.getString("roomname");
         roomId = extras.getInt("roomId");
+
+        //conferir url do websockt, não entendi pq é /mywebsockets/websocket, não está conectando
+        String url = Url.webSocket;
+        mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, url);
+
+        requestQueue = Volley.newRequestQueue(this);
+        Log.d("depois do stomp", "aqui");
+        try {
+            getUserId();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Log.d("depois do chat info", "aqui");
+
+
 
         editRoomname =  (TextView) findViewById(R.id.textViewRoomName);
         editRoomname.setText(roomName);
@@ -157,34 +170,59 @@ public class ChatActivity extends AppCompatActivity {
         listViewMessage.setAdapter(adapter);
     }
 
+    public void getUserId() throws JSONException {
+
+        Log.d("username", username);
+        JSONObject jsonBody = new JSONObject();
+        jsonBody.put("username", username);
+
+        String requestBody = jsonBody.toString();
+
+        String url = Url.getUserId;
+
+        getUserIdConnection(url, requestBody);
+    }
+
     //pra conseguir o id do usuário, não foi testado
-    public void chatInfoConnection(){
-        String url = Url.chatInfo;
+    public void getUserIdConnection(String url, final String requestBody){
 
-        JsonObjectRequest request = new JsonObjectRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        parseJSONChatInfo(response.toString());
-                        subscribe();
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("LOG", error.toString());
-                    }
-                });
-        requestQueue.add(request);
+        stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.i("getUserConnection", response);
+                if (response.equals("LOGGED")){
+                    userId = Integer.parseInt(response);
+                    subscribe();
+                } else {
+                    Toast toast = Toast.makeText(getApplicationContext(), "This user is not registered", Toast.LENGTH_LONG);
+                    Log.i("JSON", requestBody);
+                    toast.show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("ERROR", error.toString());
+            }
+        }) {
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                try {
+                    return requestBody == null ? null : requestBody.getBytes("utf-8");
+                } catch (UnsupportedEncodingException uee) {
+                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", requestBody, "utf-8");
+                    return null;
+                }
+            }
+        };
+        requestQueue.add(stringRequest);
     }
 
-    public void parseJSONChatInfo(String jsonChatInfo){
-        Gson gson = new Gson();
-        Type type = new TypeToken<ChatInfoCommand>(){}.getType();
-        chatInfo = gson.fromJson(jsonChatInfo, type);
-
-        userId = chatInfo.getUserId();
-        Log.d("userID", Integer.toString((userId)));
-    }
 
     private void subscribe() {
         mStompClient.withClientHeartbeat(1000).withServerHeartbeat(1000);
@@ -218,7 +256,6 @@ public class ChatActivity extends AppCompatActivity {
                     try{
                         newMessageReceived = newJSONMessage.getString("content");
                         // linha onde podemos saber o remetente newJSONMessage.getInt("username")
-                        //tem que implementar esse updateListView();
                         updateListView();
                     }catch(JSONException e){
                         e.printStackTrace();
@@ -245,7 +282,12 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     public void send(View view){
-        if (!mStompClient.isConnected()) return;
+
+        if (!mStompClient.isConnected()) {
+            Log.d("stompCliente", "n conectado");
+            return;
+        }
+
         newMessageSend = editMessage.getText().toString();
         editMessage.setText("");
 
