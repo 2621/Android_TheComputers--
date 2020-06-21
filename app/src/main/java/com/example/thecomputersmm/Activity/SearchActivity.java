@@ -175,20 +175,27 @@ public class SearchActivity extends AppCompatActivity {
 
         String requestBody = jsonBody.toString();
         String url = Url.getRoom;
-
+        Log.d("passou pelo getRoom", "aqui");
         getRoomConnection(url, requestBody);
     }
 
     public void getRoomConnection(String url, final String requestBody){
+        final Intent intent = new Intent(this, ChatActivity.class);
+        intent.putExtra("username", username);
+        intent.putExtra("roomname", roomname.getText().toString());
+
         stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.i("Resposta de get room", response);
                 parseJSONRoom(response);
+                intent.putExtra("roomId", roomId);
+                startActivity(intent);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Log.i("Não deu certo","aqui");
                 Log.e("ERROR", error.toString());
             }
         }) {
@@ -232,7 +239,7 @@ public class SearchActivity extends AppCompatActivity {
         stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.i("Resposta de create room", response);
+                Log.i("Resposta de add user", response);
                 if (response.equals("false")){
                     Toast toast = Toast.makeText(getApplicationContext(), username + "cannot added to this chat", Toast.LENGTH_LONG);
                     toast.show();
@@ -273,10 +280,6 @@ public class SearchActivity extends AppCompatActivity {
 
     public void createRoomConnection(String url, final String requestBody){
 
-        final Intent intent = new Intent(this, ChatActivity.class);
-        intent.putExtra("username", username);
-        intent.putExtra("roomname", roomname.getText().toString());
-
         stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -284,14 +287,6 @@ public class SearchActivity extends AppCompatActivity {
                 if (response.equals("true")){
                     try{
                         getRoom();
-                        intent.putExtra("roomId", roomId);
-
-                    }
-                    catch(JSONException e){
-                        e.printStackTrace();
-                    }
-                    startActivity(intent);
-                    try {
                         addUsers();
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -332,7 +327,6 @@ public class SearchActivity extends AppCompatActivity {
         inflater.inflate(R.menu.options, popup.getMenu());
         popup.show();
     }
-
 
     public void openChangePassword (MenuItem item){
         Intent intent = new Intent(this, ChangePasswordActivity.class);
