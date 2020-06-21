@@ -18,5 +18,6 @@ public class Url {
     static public String getMessages = "http://" + ip + "getMessages";
     static public String getUserId = "http://" + ip + "getUserId";
     static public String webSocket = "ws://" + ip + "mywebsockets/websocket";
+    static public String getRoom = "http://" + ip + "getRoom";
 }
 

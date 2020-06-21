@@ -31,6 +31,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import com.example.thecomputersmm.Adapter.UserListAdapter;
+import com.example.thecomputersmm.Command.RoomCommand;
 import com.example.thecomputersmm.R;
 import com.example.thecomputersmm.Command.UserCommand;
 import com.example.thecomputersmm.Url;
@@ -49,6 +50,7 @@ public class SearchActivity extends AppCompatActivity {
 
     ListView listViewUser;
     EditText roomname;
+    Integer roomId;
 
     ArrayList<UserCommand> users;
     UserListAdapter adapter;
@@ -161,9 +163,58 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void addUsers() throws JSONException {
+        addUserToRoom(username); //adiciona o proprio usuario que criou a sala
         for (String checkedItem: selectedUsers) {
             addUserToRoom(checkedItem);
         }
+    }
+
+    public void getRoom() throws JSONException{
+        JSONObject jsonBody = new JSONObject();
+        jsonBody.put("roomName", roomname.getText().toString());
+
+        String requestBody = jsonBody.toString();
+        String url = Url.getRoom;
+
+        getRoomConnection(url, requestBody);
+    }
+
+    public void getRoomConnection(String url, final String requestBody){
+        stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.i("Resposta de get room", response);
+                parseJSONRoom(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("ERROR", error.toString());
+            }
+        }) {
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                try {
+                    return requestBody == null ? null : requestBody.getBytes("utf-8");
+                } catch (UnsupportedEncodingException uee) {
+                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", requestBody, "utf-8");
+                    return null;
+                }
+            }
+        };
+        requestQueue.add(stringRequest);
+    }
+
+    public void parseJSONRoom(String jsonMessage){
+        Gson gson = new Gson();
+        Type type = new TypeToken<RoomCommand>() {
+        }.getType();
+        RoomCommand roomCommand = gson.fromJson(jsonMessage, type);
+        roomId = roomCommand.getId();
     }
 
     public void addUserToRoom(String username) throws JSONException {
@@ -231,6 +282,14 @@ public class SearchActivity extends AppCompatActivity {
             public void onResponse(String response) {
                 Log.i("Resposta de create room", response);
                 if (response.equals("true")){
+                    try{
+                        getRoom();
+                        intent.putExtra("roomId", roomId);
+
+                    }
+                    catch(JSONException e){
+                        e.printStackTrace();
+                    }
                     startActivity(intent);
                     try {
                         addUsers();
