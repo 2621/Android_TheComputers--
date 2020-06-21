@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -103,34 +104,22 @@ public class ChatActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 },throwable -> Log.d("fail","Error on subscribe topic",throwable));
-//                topicMessage -> { Log.d("depois do stomp", topicMessage.getPayload());
-//        });
 
         requestQueue = Volley.newRequestQueue(this);
-        Log.d("depois do stomp", "aqui");
-        try {
-            getUserId();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-//        Log.d("depois do chat info", "aqui");
-
         editRoomname =  (TextView) findViewById(R.id.textViewRoomName);
         editRoomname.setText(roomName);
-
         editMessage = findViewById(R.id.editMessage);
-
         listViewMessage = (ListView) findViewById(R.id.listViewMessage);
         listViewMessage.setDivider(null);
         listViewMessage.setDividerHeight(0);
-
+        //inicializa userId e as mensagens que já existem na página
         try{
+            getUserId();
             loadMessages();
         }
         catch(JSONException e){
             e.printStackTrace();
         }
-
     }
 
     private void updateListView() {
@@ -152,7 +141,7 @@ public class ChatActivity extends AppCompatActivity {
                 (Request.Method.POST, url, null, new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        Log.i("resposta onResponse", response.toString());
+                        Log.i("Resposta loadMessages", response.toString());
                         parseJSONMessages(response.toString());
                     }
                 }, new Response.ErrorListener() {
@@ -180,21 +169,18 @@ public class ChatActivity extends AppCompatActivity {
         Type type = new TypeToken<List<MessageCommand>>() {
         }.getType();
         messages = gson.fromJson(jsonMessages, type);
-
+        //testa se há mensagens na sala
+        if(messages.size()==1 && isNullMessage()) messages = new ArrayList<MessageCommand>();
         adapter = new MessageListAdapter(this, messages, username);
         listViewMessage.setAdapter(adapter);
     }
 
     public void getUserId() throws JSONException {
-
         Log.d("username", username);
         JSONObject jsonBody = new JSONObject();
         jsonBody.put("username", username);
-
         String requestBody = jsonBody.toString();
-
         String url = Url.getUserId;
-
         getUserIdConnection(url, requestBody);
     }
 
@@ -206,14 +192,6 @@ public class ChatActivity extends AppCompatActivity {
             public void onResponse(String response) {
                 Log.i("getUserConnection", response);
                 userId = Integer.parseInt(response);
-//                if (response.equals("LOGGED")){
-//                    userId = Integer.parseInt(response);
-//                    subscribe();
-//                } else {
-//                    Toast toast = Toast.makeText(getApplicationContext(), "This user is not registered", Toast.LENGTH_LONG);
-//                    Log.i("JSON", requestBody);
-//                    toast.show();
-//                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -239,73 +217,20 @@ public class ChatActivity extends AppCompatActivity {
         requestQueue.add(stringRequest);
     }
 
-//
-//    private void subscribe() {
-//        mStompClient.withClientHeartbeat(1000).withServerHeartbeat(1000);
-//        resetSubscriptions();
-//        Disposable dispLifecycle = mStompClient.lifecycle()
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(lifecycleEvent -> {
-//                    switch (lifecycleEvent.getType()) {
-//                        case OPENED:
-//                            break;
-//                        case ERROR:
-//                            Log.e("ChatActivity","Stomp connection error",lifecycleEvent.getException());
-//                            break;
-//                        case CLOSED:
-//                            resetSubscriptions();
-//                            break;
-//                        case FAILED_SERVER_HEARTBEAT:
-//                            Log.e("ChatActivity","Stomp hearthbeat fail",lifecycleEvent.getException());
-//                            break;
-//                    }
-//                });
-//
-//        compositeDisposable.add(dispLifecycle);
-//
-//        Disposable dispTopic = mStompClient.topic("/topic/"+roomId)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(topicMessage -> {
-//                    newJSONMessage = new JSONObject(topicMessage.getPayload());
-//                    try{
-//                        newMessageReceived = newJSONMessage.getString("content");
-//                        // linha onde podemos saber o remetente newJSONMessage.getInt("username")
-//                        updateListView();
-//                    }catch(JSONException e){
-//                        e.printStackTrace();
-//                    }
-//                },throwable -> Log.d("fail","Error on subscribe topic",throwable));
-//
-//        compositeDisposable.add(dispTopic);
-//
-//        mStompClient.connect(null);
-//    }
-//
-//    private void resetSubscriptions() {
-//        if (compositeDisposable != null) {
-//            compositeDisposable.dispose();
-//        }
-//        compositeDisposable = new CompositeDisposable();
-//    }
-//
-//    protected CompletableTransformer applySchedulers() {
-//        return upstream -> upstream
-//                .unsubscribeOn(Schedulers.newThread())
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread());
-//    }
+    private Boolean isNullMessage(){
+        return messages.get(0).getContent().isEmpty() &&
+                messages.get(0).getRoomId() == 0 &&
+                messages.get(0).getUserId() == 0 &&
+                messages.get(0).getUsername().isEmpty();
+    }
 
     public void send(View view){
         if (!mStompClient.isConnected()) {
             Log.d("stompCliente", "n conectado");
             return;
         }
-
         newMessageSend = editMessage.getText().toString();
         editMessage.setText("");
-
         JSONObject temp  = new JSONObject();
         try {
             temp.put("userId",userId);
@@ -317,13 +242,6 @@ public class ChatActivity extends AppCompatActivity {
         }
         Log.d("massageCommand", String.valueOf(temp));
         mStompClient.send("/app/message", String.valueOf(temp)).subscribe();
-
-//        //Conferir esse destino, só peguei do projeto do gv, acho que pra gente é /messages
-//        compositeDisposable.add(mStompClient.send("/app/message",String.valueOf(temp))
-//                .compose(applySchedulers())
-//                .subscribe(() -> Log.d("Chat Activity","STOMP echo send successfully"),
-//                        throwable -> Log.e("Chat Activity","Error send STOMP ",throwable)));
-
     }
 }
 
