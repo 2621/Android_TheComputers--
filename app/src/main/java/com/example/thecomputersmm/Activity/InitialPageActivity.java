@@ -97,6 +97,13 @@ public class InitialPageActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        // TODO Auto-generated method stub
+        super.onDestroy();
+        mStompClient.disconnect();
+    }
+
     @SuppressLint("CheckResult")
     private void connectSocket() {
         String url = Url.webSocket;

@@ -100,9 +100,9 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
+    protected void onDestroy() {
         // TODO Auto-generated method stub
-        super.onPause();
+        super.onDestroy();
         mStompClient.disconnect();
     }
 
