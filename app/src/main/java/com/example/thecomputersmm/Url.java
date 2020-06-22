@@ -1,7 +1,7 @@
 package com.example.thecomputersmm;
 
 public class Url {
-    static public String ip = "192.168.1.5:8080/";
+    static public String ip = "192.168.1.6:8080/";
     //Sarah:"192.168.1.6:8080/"
     //Milena: "192.168.15.10:8080/"
 
