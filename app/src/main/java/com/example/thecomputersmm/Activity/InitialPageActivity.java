@@ -30,6 +30,7 @@ import com.example.thecomputersmm.Command.RoomCommand;
 import com.example.thecomputersmm.Command.RoomListCommand;
 import com.example.thecomputersmm.R;
 import com.example.thecomputersmm.Url;
+import com.example.thecomputersmm.utils.PreferencesUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -286,6 +287,7 @@ public class InitialPageActivity extends AppCompatActivity {
                 Log.i("Resposta de logout", response);
                 if (response.equals("NOT_LOGGED")){
                     Log.i("Logout response", response);
+                    PreferencesUtils.saveUsername("",InitialPageActivity.this);
                     startActivity(intent);
                 } else {
                     Toast toast = Toast.makeText(getApplicationContext(), "Couldn't logout", Toast.LENGTH_LONG);
@@ -319,6 +321,7 @@ public class InitialPageActivity extends AppCompatActivity {
                 Log.i("Resposta de deletar", response);
                 if (response.equals("true")) {
                     Log.i("delete response", response);
+                    PreferencesUtils.saveUsername("",InitialPageActivity.this);
                     Toast toast = Toast.makeText(getApplicationContext(), "Account deleted", Toast.LENGTH_LONG);
                     toast.show();
                     startActivity(intent);

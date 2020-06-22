@@ -20,6 +20,7 @@ import com.android.volley.toolbox.Volley;
 
 import com.example.thecomputersmm.R;
 import com.example.thecomputersmm.Url;
+import com.example.thecomputersmm.utils.PreferencesUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,6 +35,7 @@ public class LoginActivity extends AppCompatActivity {
     StringRequest stringRequest;
     RequestQueue requestQueue;
 
+    String logged_username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +45,16 @@ public class LoginActivity extends AppCompatActivity {
         username = (EditText) findViewById(R.id.editTextUsername);
         password = (EditText) findViewById(R.id.editTextPassword);
 
-        requestQueue = Volley.newRequestQueue(this);
+        logged_username = PreferencesUtils.getUsername(this);
+
+
+        if (!logged_username.equals("")){
+            Intent intent = new Intent(LoginActivity.this, InitialPageActivity.class);
+            intent.putExtra("username", logged_username);
+            startActivity(intent);
+        } else{
+            requestQueue = Volley.newRequestQueue(this);
+        }
     }
 
     @Override
@@ -82,6 +93,7 @@ public class LoginActivity extends AppCompatActivity {
                 Log.i("Resposta de login", response);
                 if (response.equals("LOGGED")){
                   Log.i("Login response", response);
+                  PreferencesUtils.saveUsername(username.getText().toString(),LoginActivity.this);
                   startActivity(intent);
                 } else {
                     Toast toast = Toast.makeText(getApplicationContext(), "This user is not registered", Toast.LENGTH_LONG);

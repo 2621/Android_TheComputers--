@@ -36,6 +36,7 @@ import com.example.thecomputersmm.R;
 import com.example.thecomputersmm.Command.UserCommand;
 import com.example.thecomputersmm.Url;
 
+import com.example.thecomputersmm.utils.PreferencesUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -352,6 +353,7 @@ public class SearchActivity extends AppCompatActivity {
                 Log.i("Resposta de logout", response);
                 if (response.equals("NOT_LOGGED")){
                     Log.i("Logout response", response);
+                    PreferencesUtils.saveUsername("",SearchActivity.this);
                     startActivity(intent);
                 } else {
                     Toast toast = Toast.makeText(getApplicationContext(), "Couldn't logout", Toast.LENGTH_LONG);
@@ -387,6 +389,7 @@ public class SearchActivity extends AppCompatActivity {
                 Log.i("Resposta de deletar", response);
                 if (response.equals("true")) {
                     Log.i("delete response", response);
+                    PreferencesUtils.saveUsername("",SearchActivity.this);
                     Toast toast = Toast.makeText(getApplicationContext(), "Account deleted", Toast.LENGTH_LONG);
                     toast.show();
                     startActivity(intent);
