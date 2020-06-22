@@ -82,9 +82,9 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
+    protected void onStop() {
         // TODO Auto-generated method stub
-        super.onPause();
+        super.onStop();
         finish();
     }
 
@@ -106,7 +106,7 @@ public class SearchActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONArray response) {
                         Log.i("resposta onResponse", response.toString());
-                        parseJSON(response.toString());
+                        parseJSONUsers(response.toString());
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -131,7 +131,7 @@ public class SearchActivity extends AppCompatActivity {
         requestQueue.add(jsonArrayRequest);
     }
 
-    private void parseJSON(String jsonString) {
+    private void parseJSONUsers(String jsonString) {
         users = new ArrayList<UserCommand>();
 
         Gson gson = new Gson();
