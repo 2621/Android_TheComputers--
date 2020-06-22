@@ -46,6 +46,13 @@ public class LoginActivity extends AppCompatActivity {
         requestQueue = Volley.newRequestQueue(this);
     }
 
+    @Override
+    protected void onPause() {
+        // TODO Auto-generated method stub
+        super.onPause();
+        finish();
+    }
+
     public void openSignUpScreen (View view){
 
         Intent intent = new Intent(this, SignUpActivity.class);

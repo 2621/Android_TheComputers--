@@ -1,0 +1,304 @@
+[33mcommit 50ce0dee997d3e8aa43267bd5494803379b87edf[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Leonardo Gomes <leonardo.gomes@paretogroup.com.br>
+Date:   Mon Jun 22 00:44:54 2020 -0300
+
+    - Em ChatActivity, newMessageReceived não é mais variavel global;
+    - Adicionado um novo RoomListCommand para substituir roomList e ChatList na InitialPageActivity;
+    - Conectado o socket em queue/username;
+    - MUDANÇAS NÃO TESTADAS
+
+[33mcommit 4717b614beec55707c8cec1e13205af3450b6e43[m
+Author: asdmalizia <alessandramalizia@hotmail.com>
+Date:   Sun Jun 21 12:49:38 2020 -0300
+
+    exclusao de codigos comentados e de alguns logs de teste em ChatActivity
+
+[33mcommit 81bf40d8009c29510e397c499bbb01b2dbc7709e[m
+Author: asdmalizia <alessandramalizia@hotmail.com>
+Date:   Sun Jun 21 12:06:41 2020 -0300
+
+    correcao do metodo getRoom na SearchActivity. Obtencao do roomId de nova sala esta funcionando
+
+[33mcommit 42c4395cda85d0769f8ba46d98f9d01b079d4750[m
+Author: asdmalizia <alessandramalizia@hotmail.com>
+Date:   Sun Jun 21 01:20:59 2020 -0300
+
+    adicao de metodos em SearchActivity para obter o roomId quando a sala eh criada. Nao esta funcionando
+
+[33mcommit 53e4908c9ba94e8b3729a4fdc06f21d5a90e1798[m
+Author: asdmalizia <alessandramalizia@hotmail.com>
+Date:   Sun Jun 21 00:14:50 2020 -0300
+
+    configuracao do cliente websocket na chatActivity. Testes bem sucedidos no envio de mensagens
+
+[33mcommit 695ca544d7a13937a0463304cb13315164b2c21b[m
+Author: sarahveldhuis <sarahmveldhuis@gmail.com>
+Date:   Thu Jun 18 17:30:27 2020 -0300
+
+    Websocket está dando não conectado, conferir rotas
+
+[33mcommit 101d1bc7f4905174922019690f7ee840eda788c1[m
+Author: sarahveldhuis <sarahmveldhuis@gmail.com>
+Date:   Thu Jun 18 14:30:22 2020 -0300
+
+    ChatActivity modificado pra permiitr websocket, não testado
+
+[33mcommit d0dc4587b6100cbb60d937696c5654794115bdc7[m
+Author: sarahveldhuis <sarahmveldhuis@gmail.com>
+Date:   Thu Jun 18 15:46:30 2020 -0300
+
+    alterado pacotes de urls e adicionado o ChatInfoCommand
+
+[33mcommit 55857e0822d2f795291b38f3625d3c9d4c7154f3[m
+Author: sarahveldhuis <sarahmveldhuis@gmail.com>
+Date:   Thu Jun 18 15:43:08 2020 -0300
+
+    adiionado dependencias pra suportar o socket e java 1.8
+
+[33mcommit e02c71eac554ef3cc67cd56053b41de40645b649[m[33m ([m[1;31morigin/dev[m[33m)[m
+Author: sarahveldhuis <sarahmveldhuis@gmail.com>
+Date:   Mon Jun 8 13:38:51 2020 -0300
+
+    Foram apagados comntários e modificados nomes de alguns métodos
+
+[33mcommit 26e6f7e4a76076431bae9487375dc6fc972e4de5[m
+Author: sarahveldhuis <sarahmveldhuis@gmail.com>
+Date:   Mon Jun 8 12:59:34 2020 -0300
+
+    Só excluído alguns comentários e renomeação de métodos
+
+[33mcommit 991a8caad2170c4e19869d56bf02889cba53c1d2[m
+Merge: 97272b6 5dbfaa3
+Author: asdmalizia <alessandramalizia@hotmail.com>
+Date:   Mon Jun 8 12:53:25 2020 -0300
+
+    Merge branch 'master' of https://github.com/2621/Android_TheComputers--
+
+[33mcommit 97272b6907f5906c49fde8b2fb1ac2a0bb1e98fe[m
+Author: asdmalizia <alessandramalizia@hotmail.com>
+Date:   Mon Jun 8 12:52:28 2020 -0300
+
+    ajuste do requestBody no metodo loadMessages da ChatActivity. Mudanca no metodo http para post
+
+[33mcommit 5dbfaa30f5f923cfa74a81bc49206e564f7c0b13[m
+Author: Atena21 <milenaruy@hotmail.com>
+Date:   Mon Jun 8 08:30:31 2020 -0300
+
+    Delete Account on Search Activity OK
+
+[33mcommit 769f319879eeb0fd4f7ed92536774729375da186[m
+Author: asdmalizia <alessandramalizia@hotmail.com>
+Date:   Mon Jun 8 01:25:07 2020 -0300
+
+    adicao do metodo loadMessages na ChatActivity usando o Volley. Necessario ajustar o requestBody
+
+[33mcommit 620f7a4e4650bd4bd0164072f749a5557b588dac[m
+Author: Atena21 <milenaruy@hotmail.com>
+Date:   Sun Jun 7 23:10:46 2020 -0300
+
+    Route Delete account OK
+
+[33mcommit 15a888980acb5920e6102947fe45c1c578eeae90[m
+Author: Atena21 <milenaruy@hotmail.com>
+Date:   Sun Jun 7 22:25:13 2020 -0300
+
+    Catching users names on activity Search and creating chat room
+
+[33mcommit c015fcdaa1c2b8fd449d8bb78ac57677749a5689[m
+Author: pedrotiussi <pedrotiussi@github.com>
+Date:   Sun Jun 7 17:56:20 2020 -0300
+
+    Refatoração do MessageListAdapter e ChatActivity para que sejam compatíveis e recebam sempre um MessageCommand
+
+[33mcommit 670473d5d9c715d9a1c020d20ba1371682498e53[m
+Author: pedrotiussi <pedrotiussi@github.com>
+Date:   Sun Jun 7 17:33:51 2020 -0300
+
+    Passagem de username para a mudança da senha
+
+[33mcommit d9c1e3f8603ab067a88dd3c90d055826c65f069e[m
+Author: pedrotiussi <pedrotiussi@github.com>
+Date:   Sun Jun 7 17:24:44 2020 -0300
+
+    Passagem de username para a mudança da senha
+
+[33mcommit dfada32332e0c14906e772ee45ec4be585090e48[m
+Author: Atena21 <milenaruy@hotmail.com>
+Date:   Sun Jun 7 00:25:24 2020 -0300
+
+    Change password implementation part1
+
+[33mcommit 32b240a958ce4db9b62519ea1ba95f4eda2fd38c[m
+Author: sarahveldhuis <sarahmveldhuis@gmail.com>
+Date:   Sat Jun 6 13:35:00 2020 -0300
+
+    Rota addUsersToRoom testada com sucesso, ainda não está conseguindo pegar os usuários da interface, se um grupo não possui nenhuma mensagem enviada não aparece a conversa na InitialPage
+
+[33mcommit d18915c6a8fb8789957b273da1fb3502cbcd9e40[m
+Author: Atena21 <milenaruy@hotmail.com>
+Date:   Sat Jun 6 00:17:08 2020 -0300
+
+    Get groupname solved and Url class created
+
+[33mcommit dc071d0c33fc698ce9058731bacbd473e047ff9c[m
+Author: sarahveldhuis <sarahmveldhuis@gmail.com>
+Date:   Fri Jun 5 17:59:47 2020 -0300
+
+    InitialPage está tudo ok
+
+[33mcommit 0cbbe5697eb87fa4992c2f18032dec23d4bce114[m
+Author: sarahveldhuis <sarahmveldhuis@gmail.com>
+Date:   Fri Jun 5 11:59:10 2020 -0300
+
+    Apenas alteração de nome de variáveis
+
+[33mcommit aa311f4d3720f4cda83baa5bbc68d952b9838c2e[m
+Author: sarahveldhuis <sarahmveldhuis@gmail.com>
+Date:   Fri Jun 5 03:27:06 2020 -0300
+
+    Já foi feito o carregamento das rooms e suas últimas mensagens na array chats, mas ainda não está aparecendo na tela
+
+[33mcommit 8013280d6020af94fb9c5401ad992af84a9b5132[m
+Author: sarahveldhuis <sarahmveldhuis@gmail.com>
+Date:   Fri Jun 5 02:03:19 2020 -0300
+
+    Foram feitos os loadRooms do usuário logado
+
+[33mcommit 2bdee3287ced0400237aa063419126a073e1c27c[m
+Author: sarahveldhuis <sarahmveldhuis@gmail.com>
+Date:   Fri Jun 5 01:27:13 2020 -0300
+
+    Refatoração dos pacotes java apenas para organização do projeto
+
+[33mcommit 76446f1d0f1a65537a5cf1cca82b54103764e307[m
+Author: sarahveldhuis <sarahmveldhuis@gmail.com>
+Date:   Thu Jun 4 18:12:25 2020 -0300
+
+    Foi carregado a lista de usuários na página Search
+
+[33mcommit 6ad3027c52fae17a5c752d29de288f7cc6bb6a9e[m
+Author: sarahveldhuis <sarahmveldhuis@gmail.com>
+Date:   Thu Jun 4 14:55:07 2020 -0300
+
+    página search com problema no loadUsers
+
+[33mcommit 9d88590ea4c750999387eff1fba5894880be1fec[m
+Author: sarahveldhuis <sarahmveldhuis@gmail.com>
+Date:   Thu Jun 4 02:32:23 2020 -0300
+
+    LoadUsers da pagina Seacrh está com com.android.volley.TimeoutError
+
+[33mcommit 7f8ef7772af4aad4cea4959f0c0587638bd05ab5[m
+Author: sarahveldhuis <sarahmveldhuis@gmail.com>
+Date:   Wed Jun 3 19:31:48 2020 -0300
+
+    a rota de logout está ok
+
+[33mcommit 2a84ee09c4ab8f413456aecfe7f562c05dd0ed90[m
+Author: Atena21 <milenaruy@hotmail.com>
+Date:   Wed Jun 3 15:21:34 2020 -0300
+
+    logout function implementation
+
+[33mcommit 710a984762933a23e8c5d34a3f0ccf04816101ab[m
+Author: sarahveldhuis <sarahmveldhuis@gmail.com>
+Date:   Wed Jun 3 17:14:14 2020 -0300
+
+    cadasro testado com sucesso
+
+[33mcommit f33b92b1f55f0dcc8e0023217eb0359b442a907c[m
+Author: Atena21 <milenaruy@hotmail.com>
+Date:   Tue Jun 2 16:47:36 2020 -0300
+
+    update popup group name
+
+[33mcommit d498fdc5c7e5599927c3509173eea6209325f437[m
+Author: Atena21 <milenaruy@hotmail.com>
+Date:   Tue Jun 2 16:29:23 2020 -0300
+
+    --
+
+[33mcommit f0b4319bf7f229b784e74013857592646a29a5b5[m
+Author: Atena21 <milenaruy@hotmail.com>
+Date:   Tue Jun 2 16:28:14 2020 -0300
+
+    Creation of the popup window that defines a group name
+
+[33mcommit b0b63662b27f37ce4bfee851f4452648b0af0903[m
+Author: Atena21 <milenaruy@hotmail.com>
+Date:   Tue Jun 2 08:41:21 2020 -0300
+
+    -
+
+[33mcommit 1d3b873d3240a64e4fb68f37421a44f6f7aef1ed[m
+Author: Atena21 <milenaruy@hotmail.com>
+Date:   Tue Jun 2 01:45:21 2020 -0300
+
+    layout updates
+
+[33mcommit 602c190a8073910ebfadbf2b813d4b308f6e4618[m
+Author: sarahveldhuis <sarahmveldhuis@gmail.com>
+Date:   Mon Jun 1 02:05:37 2020 -0300
+
+    adicionei conexão ao cadastro, falta testar
+
+[33mcommit efbb1f36fae187006dca5110b718ed46ab9fe76a[m
+Author: sarahveldhuis <sarahmveldhuis@gmail.com>
+Date:   Mon Jun 1 01:59:46 2020 -0300
+
+    adicionei conexão ao cadastro, falta testar
+
+[33mcommit 135953ef2a4679e809afda643f661321819efa03[m
+Author: Atena21 <milenaruy@hotmail.com>
+Date:   Mon Jun 1 01:13:37 2020 -0300
+
+    layout updates
+
+[33mcommit 418472b7a0a28fc864a97f567d10427123b7f6a9[m
+Author: pedrotiussi <pedrotiussi@github.com>
+Date:   Sun May 31 18:44:43 2020 -0300
+
+    Login funcionando
+
+[33mcommit 23fc89c9af07bc2fe49810551b60862ab80979dd[m
+Author: sarahveldhuis <sarahmveldhuis@gmail.com>
+Date:   Sun May 31 16:41:33 2020 -0300
+
+    importei volley
+
+[33mcommit 46b9609d8eafe4c8bc5cfe85c0e64168d8bba01d[m
+Author: Atena21 <milenaruy@hotmail.com>
+Date:   Sun May 31 03:13:51 2020 -0300
+
+    list views updates
+
+[33mcommit 4d33c1cf24214dec1d676bc713c455fed651e3c9[m
+Author: sarahveldhuis <sarahmveldhuis@gmail.com>
+Date:   Wed May 27 17:58:34 2020 -0300
+
+    ajeitei a navegacao entre as telas
+
+[33mcommit 5ee84743b2bd9f64a4f27fd32d21b15a4d8f16c3[m
+Merge: 10865b8 c06a68b
+Author: Atena21 <milenaruy@hotmail.com>
+Date:   Tue May 26 15:17:43 2020 -0300
+
+    Merge branch 'master' of https://github.com/2621/Android_TheComputers--
+
+[33mcommit 10865b870bf68c3ca6d5f27e4c845f40b16f1eeb[m
+Author: Atena21 <milenaruy@hotmail.com>
+Date:   Tue May 26 15:16:45 2020 -0300
+
+    background
+
+[33mcommit c06a68ba8c2e8b96c4d3aa9ccfc6aebf48673898[m
+Author: Milena Ruy <43274554+2621@users.noreply.github.com>
+Date:   Mon May 25 14:37:06 2020 -0300
+
+    Create README.md
+
+[33mcommit e0f5aa7f70baef8de42d8e623ab85288ddc8857d[m
+Author: Atena21 <milenaruy@hotmail.com>
+Date:   Mon May 25 14:23:13 2020 -0300
+
+    first commit, screens

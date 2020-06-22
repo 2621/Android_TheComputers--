@@ -81,6 +81,13 @@ public class SearchActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onPause() {
+        // TODO Auto-generated method stub
+        super.onPause();
+        finish();
+    }
+
     public void loadUsers() throws JSONException{
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("username", username);

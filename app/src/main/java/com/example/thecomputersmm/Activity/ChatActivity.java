@@ -99,6 +99,13 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onPause() {
+        // TODO Auto-generated method stub
+        super.onPause();
+        mStompClient.disconnect();
+    }
+
     @SuppressLint("CheckResult")
     private void connectSocket(){
         //está conectando

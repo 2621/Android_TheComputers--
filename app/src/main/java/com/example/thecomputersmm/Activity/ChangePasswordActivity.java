@@ -49,6 +49,13 @@ public class ChangePasswordActivity<Authentication> extends AppCompatActivity {
         requestQueue = Volley.newRequestQueue(this);
     }
 
+    @Override
+    protected void onPause() {
+        // TODO Auto-generated method stub
+        super.onPause();
+        finish();
+    }
+
     private boolean validacaoSenha(String password, String confPassword){
         if(password.equals(confPassword)){
             return true;
