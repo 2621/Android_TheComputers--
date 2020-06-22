@@ -73,7 +73,6 @@ public class ChatActivity extends AppCompatActivity {
     private StompClient mStompClient;
     private CompositeDisposable compositeDisposable;
     JSONObject newJSONMessage;
-    String newMessageReceived;
     String newMessageSend;
 
     @SuppressLint({"WrongViewCast", "CheckResult"})
@@ -97,9 +96,9 @@ public class ChatActivity extends AppCompatActivity {
                 .subscribe(topicMessage -> {
                     newJSONMessage = new JSONObject(topicMessage.getPayload());
                     try{
-                        newMessageReceived = newJSONMessage.getString("content");
+                        String newMessageReceived = newJSONMessage.getString("content");
                         // linha onde podemos saber o remetente newJSONMessage.getInt("username")
-                        updateListView();
+                        updateListView(newMessageReceived);
                     }catch(JSONException e){
                         e.printStackTrace();
                     }
@@ -122,7 +121,7 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    private void updateListView() {
+    private void updateListView(String newMessageReceived) {
         messages.add(new MessageCommand(newMessageReceived, username, userId, roomId));
         adapter.notifyDataSetChanged();
     }

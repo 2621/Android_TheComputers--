@@ -1,6 +1,7 @@
 package com.example.thecomputersmm.Adapter;
 
 import com.example.thecomputersmm.Command.ChatListCommand;
+import com.example.thecomputersmm.Command.RoomListCommand;
 import com.example.thecomputersmm.R;
 
 import android.app.Activity;
@@ -11,13 +12,14 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class ChatListAdapter extends ArrayAdapter<ChatListCommand> {
+public class ChatListAdapter extends ArrayAdapter<RoomListCommand> {
     private final Activity context;
 
-    private final ArrayList<ChatListCommand> chats;
+    private final List<RoomListCommand> chats;
 
-    public ChatListAdapter(Activity context, int layoutItem, ArrayList<ChatListCommand> chats) {
+    public ChatListAdapter(Activity context, int layoutItem, List<RoomListCommand> chats) {
         super(context, layoutItem, chats);
         // TODO Auto-generated constructor stub
 
@@ -35,7 +37,7 @@ public class ChatListAdapter extends ArrayAdapter<ChatListCommand> {
         TextView nameText = (TextView) rowView.findViewById(R.id.chatName);
         TextView textText = (TextView) rowView.findViewById(R.id.chatText);
 
-        nameText.setText(chats.get(position).getRoomName());
+        nameText.setText(chats.get(position).getName());
         textText.setText(chats.get(position).getLastMessage());
 
         return rowView;

@@ -2,6 +2,7 @@ package com.example.thecomputersmm.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,10 +24,10 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.thecomputersmm.Command.ChatListCommand;
 import com.example.thecomputersmm.Adapter.ChatListAdapter;
 import com.example.thecomputersmm.Command.MessageCommand;
 import com.example.thecomputersmm.Command.RoomCommand;
+import com.example.thecomputersmm.Command.RoomListCommand;
 import com.example.thecomputersmm.R;
 import com.example.thecomputersmm.Url;
 import com.google.gson.Gson;
@@ -38,16 +39,23 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import ua.naiksoftware.stomp.Stomp;
+import ua.naiksoftware.stomp.StompClient;
+
 public class InitialPageActivity extends AppCompatActivity {
+
+    private StompClient mStompClient;
 
     ListView listViewChat;
     String username;
 
-    ArrayList<ChatListCommand> chats;
-    List<RoomCommand> roomList;
+//    ArrayList<ChatListCommand> chats;
+//    List<RoomCommand> roomLista;
+    List<RoomListCommand> roomList;
     ChatListAdapter adapter;
 
     StringRequest stringRequest;
@@ -70,7 +78,9 @@ public class InitialPageActivity extends AppCompatActivity {
 
         listViewChat = (ListView) findViewById(R.id.listViewChat);
 
-        chats = new ArrayList<ChatListCommand>();
+//        chats = new ArrayList<ChatListCommand>();
+
+        connectSocket();
 
         try {
             loadRooms();
@@ -89,6 +99,31 @@ public class InitialPageActivity extends AppCompatActivity {
             }
         });
     }
+
+    @SuppressLint("CheckResult")
+    private void connectSocket() {
+        String url = Url.webSocket;
+        mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, url);
+        mStompClient.connect();
+        mStompClient.topic("/queue/"+ username)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(queueMessage -> {
+                    JSONObject newJSONRoom = new JSONObject(queueMessage.getPayload());
+                    try{
+                        String newJsonRoom = newJSONRoom.getString("content");
+                        Gson gson = new Gson();
+                        Type type = new TypeToken<RoomCommand>() {
+                        }.getType();
+                        RoomCommand newRoom = gson.fromJson(newJsonRoom, type);
+                        updateRoomList(newRoom);
+                    }catch(JSONException e){
+                        e.printStackTrace();
+                    }
+                },throwable -> Log.d("fail","Error on subscribe topic",throwable));
+
+    }
+
 
     public void openSearch (View view){
         Intent intent = new Intent(this, SearchActivity.class);
@@ -146,12 +181,13 @@ public class InitialPageActivity extends AppCompatActivity {
     private void parseJSONRoom(String jsonString) throws JSONException, InterruptedException {
         Gson gson = new Gson();
         Type type = new TypeToken<List<RoomCommand>>(){}.getType();
-        roomList = gson.fromJson(jsonString, type);
+        List<RoomCommand> roomList = gson.fromJson(jsonString, type);
 
         roomListSize = roomList.size();
         Log.i("roomListSize", Integer.toString(roomListSize));
         contador = 0;
         for (RoomCommand room : roomList){
+            this.roomList.add(new RoomListCommand(room.getId(), room.getName(), ""));
             contador++;
             loadLastMessage(room);
         }
@@ -207,9 +243,13 @@ public class InitialPageActivity extends AppCompatActivity {
         Type type = new TypeToken<MessageCommand>(){}.getType();
         MessageCommand lastMessage = gson.fromJson(jsonString, type);
 
-        chats.add(new ChatListCommand(room.getName(), lastMessage.getContent()));
+        RoomListCommand roomListElement = new RoomListCommand(room.getId(), room.getName(), "");
+        RoomListCommand newRoomListElement = new RoomListCommand(room.getId(), room.getName(), lastMessage.getContent());
+        roomList.set(roomList.indexOf(roomListElement), newRoomListElement);
+
+//        chats.add(new ChatListCommand(room.getName(), lastMessage.getContent()));
         if(contador == roomListSize){
-            adapter = new ChatListAdapter(this, R.layout.item_chat_list,chats);
+            adapter = new ChatListAdapter(this, R.layout.item_chat_list, roomList);
             listViewChat.setAdapter(adapter);
         }
     }
@@ -305,5 +345,11 @@ public class InitialPageActivity extends AppCompatActivity {
         };
 
         requestQueue.add(stringRequest);
+    }
+
+    // A ser chamado no retorno do subscribe
+    private void updateRoomList(RoomCommand room) {
+        roomList.add(new RoomListCommand(room.getId(),room.getName(), ""));
+        adapter.notifyDataSetChanged();
     }
 }
