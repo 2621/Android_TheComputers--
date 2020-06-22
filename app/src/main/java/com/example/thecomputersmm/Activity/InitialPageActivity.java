@@ -365,7 +365,9 @@ public class InitialPageActivity extends AppCompatActivity {
         if (roomListId != -1){
             roomList.set(roomListId, room);
         }
-        roomList.add(new RoomListCommand(room.getId(),room.getName(), room.getLastMessage()));
+        else{
+            roomList.add(new RoomListCommand(room.getId(),room.getName(), room.getLastMessage()));
+        }
         adapter.notifyDataSetChanged();
     }
 
