@@ -374,7 +374,7 @@ public class SearchActivity extends AppCompatActivity {
         jsonBody.put("username", username);
         String requestBody = jsonBody.toString();
 
-        String url = Url.deleteUser;
+        String url = Url.removeUser;
         deleteAccountConnection(url, requestBody);
     }
 

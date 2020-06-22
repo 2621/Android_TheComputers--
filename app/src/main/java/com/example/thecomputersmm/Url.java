@@ -1,7 +1,7 @@
 package com.example.thecomputersmm;
 
 public class Url {
-    static public String ip = "192.168.1.6:8080/";
+    static public String ip = "34.95.139.21:8080/";
     //Sarah:"192.168.1.6:8080/"
     //Milena: "192.168.15.10:8080/"
 
@@ -14,7 +14,7 @@ public class Url {
     static public String getLastMessage = "http://" + ip + "getLastMessage";
     static public String addUserToRoom = "http://" + ip + "addUserToRoom";
     static public String updateUserPassword = "http://" + ip + "updateUserPassword";
-    static public String deleteUser = "http://" + ip + "removeUser";
+    static public String removeUser = "http://" + ip + "removeUser";
     static public String getMessages = "http://" + ip + "getMessages";
     static public String getUserId = "http://" + ip + "getUserId";
     static public String webSocket = "ws://" + ip + "mywebsockets/websocket";

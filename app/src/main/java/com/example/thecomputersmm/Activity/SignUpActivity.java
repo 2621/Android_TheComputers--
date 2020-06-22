@@ -87,6 +87,7 @@ public class SignUpActivity extends AppCompatActivity {
     private void signUpConnection(String url, final String requestBody) {
 
         final Intent intent = new Intent(this, InitialPageActivity.class);
+        intent.putExtra("username", username.getText().toString());
 
         stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
