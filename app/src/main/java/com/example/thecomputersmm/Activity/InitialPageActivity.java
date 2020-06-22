@@ -39,6 +39,7 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -53,8 +54,6 @@ public class InitialPageActivity extends AppCompatActivity {
     ListView listViewChat;
     String username;
 
-//    ArrayList<ChatListCommand> chats;
-//    List<RoomCommand> roomLista;
     List<RoomListCommand> roomList;
     ChatListAdapter adapter;
 
@@ -62,9 +61,6 @@ public class InitialPageActivity extends AppCompatActivity {
     JsonArrayRequest jsonArrayRequest;
     JsonObjectRequest jsonObjectRequest;
     RequestQueue requestQueue;
-
-    Integer roomListSize;
-    Integer contador;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +73,7 @@ public class InitialPageActivity extends AppCompatActivity {
         requestQueue = Volley.newRequestQueue(this);
 
         listViewChat = (ListView) findViewById(R.id.listViewChat);
+        roomList = new ArrayList<>();
 
 //        chats = new ArrayList<ChatListCommand>();
 
@@ -110,16 +107,13 @@ public class InitialPageActivity extends AppCompatActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(queueMessage -> {
                     JSONObject newJSONRoom = new JSONObject(queueMessage.getPayload());
-                    try{
-                        String newJsonRoom = newJSONRoom.getString("content");
+                        String newJsonRoom = newJSONRoom.toString();
                         Gson gson = new Gson();
                         Type type = new TypeToken<RoomCommand>() {
                         }.getType();
                         RoomCommand newRoom = gson.fromJson(newJsonRoom, type);
                         updateRoomList(newRoom);
-                    }catch(JSONException e){
-                        e.printStackTrace();
-                    }
+//                        subscribeOnRoom(newRoom);
                 },throwable -> Log.d("fail","Error on subscribe topic",throwable));
 
     }
@@ -183,17 +177,16 @@ public class InitialPageActivity extends AppCompatActivity {
         Type type = new TypeToken<List<RoomCommand>>(){}.getType();
         List<RoomCommand> roomList = gson.fromJson(jsonString, type);
 
-        roomListSize = roomList.size();
+        Integer roomListSize = roomList.size();
         Log.i("roomListSize", Integer.toString(roomListSize));
-        contador = 0;
+        Integer contador = 0;
         for (RoomCommand room : roomList){
-            this.roomList.add(new RoomListCommand(room.getId(), room.getName(), ""));
-            contador++;
-            loadLastMessage(room);
+            //subscribe()
+            loadLastMessage(room, roomListSize, ++contador);
         }
     }
 
-    public void loadLastMessage(RoomCommand room) throws JSONException {
+    public void loadLastMessage(RoomCommand room, Integer roomListSize, Integer contador) throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", room.getId());
         jsonObject.put("name", room.getName());
@@ -201,10 +194,10 @@ public class InitialPageActivity extends AppCompatActivity {
         String requestBody = jsonObject.toString();
         String url = Url.getLastMessage;
 
-        loadLastMessageConnection(url, requestBody, room);
+        loadLastMessageConnection(url, requestBody, room, roomListSize, contador);
     }
 
-    public void loadLastMessageConnection(String url, final String requestBody, final RoomCommand room) {
+    public void loadLastMessageConnection(String url, final String requestBody, final RoomCommand room, Integer roomListSize, Integer contador) {
 
         //o retorno de getUsers é um JSONObject, e o body é um JsonObject
         jsonObjectRequest = new JsonObjectRequest
@@ -212,7 +205,7 @@ public class InitialPageActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.i("resposta onResponse", response.toString());
-                        parseJSONLastMessage(response.toString(), room);
+                        parseJSONLastMessage(response.toString(), room, roomListSize, contador);
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -237,17 +230,12 @@ public class InitialPageActivity extends AppCompatActivity {
         requestQueue.add(jsonObjectRequest);
     }
 
-    private void parseJSONLastMessage(String jsonString, RoomCommand room) {
+    private void parseJSONLastMessage(String jsonString, RoomCommand room, Integer roomListSize, Integer contador) {
 
         Gson gson = new Gson();
         Type type = new TypeToken<MessageCommand>(){}.getType();
         MessageCommand lastMessage = gson.fromJson(jsonString, type);
-
-        RoomListCommand roomListElement = new RoomListCommand(room.getId(), room.getName(), "");
-        RoomListCommand newRoomListElement = new RoomListCommand(room.getId(), room.getName(), lastMessage.getContent());
-        roomList.set(roomList.indexOf(roomListElement), newRoomListElement);
-
-//        chats.add(new ChatListCommand(room.getName(), lastMessage.getContent()));
+        this.roomList.add(new RoomListCommand(room.getId(), room.getName(), lastMessage.getContent()));
         if(contador == roomListSize){
             adapter = new ChatListAdapter(this, R.layout.item_chat_list, roomList);
             listViewChat.setAdapter(adapter);
