@@ -59,7 +59,6 @@ public class ChatActivity extends AppCompatActivity {
     private ListView listViewMessage;
 
     private ArrayList<MessageCommand> messages = new ArrayList<>();
-    private ChatInfoCommand chatInfo;
     private MessageListAdapter adapter;
 
     private String username;
@@ -68,12 +67,7 @@ public class ChatActivity extends AppCompatActivity {
     private Integer userId;
 
     RequestQueue requestQueue;
-    StringRequest stringRequest;
-
     private StompClient mStompClient;
-    private CompositeDisposable compositeDisposable;
-    JSONObject newJSONMessage;
-    String newMessageSend;
 
     @SuppressLint({"WrongViewCast", "CheckResult"})
     @Override
@@ -86,23 +80,7 @@ public class ChatActivity extends AppCompatActivity {
         roomName = extras.getString("roomname");
         roomId = extras.getInt("roomId");
 
-        //está conectando
-        String url = Url.webSocket;
-        mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, url);
-        mStompClient.connect();
-        mStompClient.topic("/topic/"+roomId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(topicMessage -> {
-                    newJSONMessage = new JSONObject(topicMessage.getPayload());
-                    try{
-                        String newMessageReceived = newJSONMessage.getString("content");
-                        // linha onde podemos saber o remetente newJSONMessage.getInt("username")
-                        updateListView(newMessageReceived);
-                    }catch(JSONException e){
-                        e.printStackTrace();
-                    }
-                },throwable -> Log.d("fail","Error on subscribe topic",throwable));
+        connectSocket();
 
         requestQueue = Volley.newRequestQueue(this);
         editRoomname =  (TextView) findViewById(R.id.textViewRoomName);
@@ -121,8 +99,28 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    private void updateListView(String newMessageReceived) {
-        messages.add(new MessageCommand(newMessageReceived, username, userId, roomId));
+    @SuppressLint("CheckResult")
+    private void connectSocket(){
+        //está conectando
+        String url = Url.webSocket;
+        mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, url);
+        mStompClient.connect();
+        mStompClient.topic("/topic/"+roomId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(topicMessage -> {
+                    JSONObject newJSONMessage = new JSONObject(topicMessage.getPayload());
+                    String newMessageReceived = newJSONMessage.toString();
+                    Gson gson = new Gson();
+                    Type type = new TypeToken<MessageCommand>() {
+                    }.getType();
+                    MessageCommand newMessage = gson.fromJson(newMessageReceived, type);
+                    updateListView(newMessage);
+                },throwable -> Log.d("fail","Error on subscribe topic",throwable));
+    }
+
+    private void updateListView(MessageCommand newMessageReceived) {
+        messages.add(newMessageReceived);
         adapter.notifyDataSetChanged();
     }
 
@@ -186,7 +184,7 @@ public class ChatActivity extends AppCompatActivity {
     //pra conseguir o id do usuário. Está funcionando
     public void getUserIdConnection(String url, final String requestBody){
 
-        stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.i("getUserConnection", response);
@@ -228,7 +226,7 @@ public class ChatActivity extends AppCompatActivity {
             Log.d("stompCliente", "n conectado");
             return;
         }
-        newMessageSend = editMessage.getText().toString();
+        String newMessageSend = editMessage.getText().toString();
         editMessage.setText("");
         JSONObject temp  = new JSONObject();
         try {

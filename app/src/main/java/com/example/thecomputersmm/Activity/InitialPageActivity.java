@@ -113,11 +113,24 @@ public class InitialPageActivity extends AppCompatActivity {
                         }.getType();
                         RoomCommand newRoom = gson.fromJson(newJsonRoom, type);
                         updateRoomList(newRoom);
-//                        subscribeOnRoom(newRoom);
+                        subscribeOnRoom(newRoom);
                 },throwable -> Log.d("fail","Error on subscribe topic",throwable));
 
     }
 
+    @SuppressLint("CheckResult")
+    private void subscribeOnRoom(RoomCommand room){
+        mStompClient.topic("/topic/"+ room.getId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(topicMessage -> {
+                    JSONObject newJSONMessage = new JSONObject(topicMessage.getPayload());
+                    String newMessageReceived = newJSONMessage.getString("content");
+                    RoomListCommand newRoomListElement = new RoomListCommand(room.getId(), room.getName(), newMessageReceived);
+                    updateRoomList(newRoomListElement);
+                },throwable -> Log.d("fail","Error on subscribe topic",throwable));
+
+    }
 
     public void openSearch (View view){
         Intent intent = new Intent(this, SearchActivity.class);
@@ -181,7 +194,7 @@ public class InitialPageActivity extends AppCompatActivity {
         Log.i("roomListSize", Integer.toString(roomListSize));
         Integer contador = 0;
         for (RoomCommand room : roomList){
-            //subscribe()
+            subscribeOnRoom(room);
             loadLastMessage(room, roomListSize, ++contador);
         }
     }
@@ -337,7 +350,43 @@ public class InitialPageActivity extends AppCompatActivity {
 
     // A ser chamado no retorno do subscribe
     private void updateRoomList(RoomCommand room) {
-        roomList.add(new RoomListCommand(room.getId(),room.getName(), ""));
+        Integer roomListId = findRoomListIdByRoom(room);
+        if (roomListId != -1){
+            roomList.set(roomListId, createRoomListCommand(room));
+        }
+        else{
+            roomList.add(new RoomListCommand(room.getId(),room.getName(), ""));
+        }
         adapter.notifyDataSetChanged();
+    }
+
+    private void updateRoomList(RoomListCommand room) {
+        Integer roomListId = findRoomListIdByRoom(getRoom(room));
+        if (roomListId != -1){
+            roomList.set(roomListId, room);
+        }
+        roomList.add(new RoomListCommand(room.getId(),room.getName(), room.getLastMessage()));
+        adapter.notifyDataSetChanged();
+    }
+
+    private Integer findRoomListIdByRoom(RoomCommand room) {
+        for (RoomListCommand currentRoom: roomList) {
+            if (currentRoom.getId() == room.getId()){
+                return roomList.indexOf(currentRoom);
+            }
+        }
+        return -1;
+    }
+
+    private RoomListCommand createRoomListCommand(RoomCommand room) {
+        return new RoomListCommand(room.getId(),room.getName(), "");
+    }
+
+    private RoomListCommand createRoomListCommand(RoomListCommand room, String lastMessage) {
+        return new RoomListCommand(room.getId(),room.getName(), lastMessage);
+    }
+
+    private RoomCommand getRoom(RoomListCommand room){
+        return new RoomCommand(room.getId(), room.getName());
     }
 }
